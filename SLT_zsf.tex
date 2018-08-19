@@ -155,15 +155,19 @@ $J(x + \delta x) - J(x) = 0$ \\
 Given: functional of form 
 $J[f]=\int _{a}^{b} L[x,f(x),f'(x)] dx $ \\
 change $\delta J = \int_a^b  \frac{\delta J}{\delta f(x)} \delta f(x) dx $ \\
+\textit{complete data likelihood:} $p(x,k|\mu, \eta)$\\
+\textit{incomplete data likelihood:} $p(x|\mu, \eta)$\\
 functional derivative: $\frac{\delta J}{\delta f(x)} = \frac{\partial L}{\partial f} -\frac{d}{dx} \frac{\partial L}{\partial f'} $
 \subsubsection*{EM-Algorithm}
 \textit{given}: $p(\mathbf{X},\mathbf{Z}|\mathbf{\theta})$ with observed variables $\mathbf{X}$ and latent variables $\mathbf{Z}$, parameters $\mathbf{\theta}$
 \textit{goal:} maximize likelihood function $p(\mathbf{X}|\mathbf{\theta})$ wrt. $\mathbf{\theta}$.
 \begin{enumerate}
 	\item choose initial setting for $\boldsymbol{\theta}^{old}$
-	\item \textbf{E-step:} evaluate $p(\mathbf{X},\mathbf{Z}|\boldsymbol{\theta}^{old})$
-	\item \textbf{M-step:} $\boldsymbol{\theta}^{new}) = \text{argmax}_{\theta} \mathcal{Q}(\boldsymbol{\theta}, \boldsymbol{\theta}^{old})$ where $\mathcal{Q}(\boldsymbol{\theta}, \boldsymbol{\theta}^{old}) = \sum_{\mathbf{Z}} p(\mathbf{Z}|\mathbf{X},\boldsymbol{\theta}^{old}) ln(p(\mathbf{X}|\boldsymbol{\theta}))$
-	\item check if converged. Otherwise set $\boldsymbol{\theta}^{old} \leftarrow \boldsymbol{\theta}^{new}$
+	\item \textbf{E-step:} evaluate 
+	$Q_i(z^{(i)}) := p(z^{(i)}|x^{(i)};\theta)$
+	\item \textbf{M-step:} 
+	$\theta := argmax_{\theta} \sum_i \sum_{z^{(i)}} Q_i(z^{(i)})log\frac{p(x^{(i)},z^{(i)};\theta)}{Q_i(z^{(i)})}$ 
+	\item check if converged.
 \end{enumerate}
 
 \subsection*{Information Theory}
@@ -248,6 +252,9 @@ Given constraints/moments $\mu_i = \mathbb{E}[r_j] = \sum_{i=1}^n r_j(\omega_i)p
 $p(x) = \frac 1 Z \text{exp}(- \sum_{j=1}^m \lambda_j r_j(x))$ where $m$ is the number of constraints. \\
 
 $Z = \int_x \text{exp}(- \sum_{j=1}^m \lambda_j r_j(x)) dx$
+\subsubsection*{Gibbs Free Energy}
+$G(p) = \sum_x p(x) E(x) + \frac{1}{\beta} \sum_x p(x)log p(x) = \frac{1}{\beta} D_{KL}(p||p_{\beta}) + F(\beta)$
+Minimising $G(p)$ minimises the expected cost and maximises the entropy of $p(x)$.
 \subsubsection*{Derive least sensitive distributions}
 \begin{enumerate}
 	\item determine all $r_j$ from constraints.
@@ -257,12 +264,14 @@ $Z = \int_x \text{exp}(- \sum_{j=1}^m \lambda_j r_j(x)) dx$
 
 For a general cost function:
 \[\mathbf{P}(\mathbf{c}) = \frac{e^{-\beta \mathcal{R}(c)}}{\sum_{c' \in \mathcal{C} e^{-\beta \mathcal{R}(c')}}} = \frac{e^{-\beta \mathcal{R}(c)}}{Z} = \text{exp}(- \beta (\mathcal{R}(c)- \mathcal{F})) \]
-where $\mathcal{F} = -\frac 1 \beta \text{log}(Z)$ is known as "`free energy"'. \\
+where $\mathcal{F}(\beta) = -\frac 1 \beta \text{log}(Z)$ is known as "`free energy"'. \\
 Free energy for any distribution: $\mathcal{F} = - \frac 1 \beta S(\mathbf{P}) + \mathbb{E}_{\mathbf{P}} \mathcal{R} $
 \subsection*{Entropy}
 $H_X$ of a discrete random variable $X$ is a measure of the amount of \textit{uncertainty} associated with the value of $X$ when only its distribution is known \\
 $H(X)=\mathbb {E} _{X}[I(x)]=-\sum _{x\in \mathbb {X} }p(x)\log p(x)$ \\
+$H(Y|X) = \sum_{x,y} p(x,y)log(p(y|x)$\\
 \textit{Chain rule: } $ H(X,Y) = H(X) + H(Y|X) $ \\
+
 $H(X,Y|Z) = H(X|Z) + H(Y|X,Z)$
 
 \subsection*{Maximum Entropy Clustering}
@@ -313,7 +322,7 @@ First eigenvalue is always equal to 1. The smaller $\lambda_2$ the faster the MC
 \textit{irreducible: } It is possible to get to any state from any state \\
 \textit{Detailed balance: } $\pi _{i}P_{ij}=\pi _{j}P_{ji}$ or $p(x) (x \to y) = p(y) p(y \to x)$, implies stationarity! \\
 \textit{Stationarity: } $\pi \mathbf {P} =\pi$ \\
-\textit{Aperiodic: } Chain should not get trapped in cycles \\
+\textit{Aperiodic: } Chain should not get trapped in cycles, i.e. for all states x,y there's an integer $n(x,y)$, s.t. $\forall n > n(x,y)$, there's a path of lenght $n$ between $x$ and $y$ \\
 
 
 \subsubsection*{Metropolis-Hastings}
@@ -344,6 +353,7 @@ Applicable if:
 	\item conditional distribution of each variable is known and is easy (or at least, easier than joint distribution) to sample from
 	\item 
 \end{itemize}
+For Gibbs sampling in the Ising model we use the transition probability to a new state where only $\sigma_i$ is flipped: $p_i(\sigma) = exp(-\beta max[0,\Delta E_i(\sigma)])$ 
  simulated annealing is often used to reduce the "random walk" behavior in the early part of the sampling process
 
 \subsubsection*{Heat-Bath Algorithm}
@@ -401,10 +411,14 @@ $ \Rightarrow $ embed given nonmetric proximity data problem in vector space wit
 \textit{Embed pairwise clustering problem into vector space.}
 \subsubsection*{CSE algorithm}
 \begin{enumerate}
-	\item given dissimilarity matrix $D$, calculate centralized version $D^c = QDQ$ where $Q = I_n - \frac{1}{n} e_n e_n^T$
-	\item calculate matrix $S^c = - 1/2 D^c$
+	\item given dissimilarity matrix $D$, calculate centralized version $D^c$ (3.13)
+	\item calculate matrix $S^c = - 1/2 D^c$ (Lemma 3)
 	\item calculate eigenvalues of $S^c$. If $S^c$ isn't positive semidefinite, $\tilde{S} = S^c - \lambda_n \cdot I_n$ (subtract smallest eigenvalue from diagonal elements)
-	\item 
+	\item  $\tilde{D}_{ij} =  \tilde{S}_{ii} +   \tilde{S}_{jj} + \tilde{S}_{ij} $
+	\item Next steps only if you want embedding vectors
+	\item Get $\tilde{S}^c = \frac{1}{2}\tilde{D}^c$
+	\item Get eigendecomposition of $\tilde{S}^c = V\Lambda V^T$
+	\item The rows of $X_p = V_p (\Lambda_p)^{1/2}$ are the p-dimensional embedding vectors of the data. $V_p$ are the first $p$ eigenvectors.
 \end{enumerate}
 
 \textit{Remarks:}
@@ -449,5 +463,6 @@ Mean field $h_{u \alpha}$ is the expected cost $\mathcal{R}(c)$ that object $u$ 
 \end{itemize}
 \end{multicols*}
 \end{document}
+
 
 
