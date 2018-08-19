@@ -449,6 +449,7 @@ $Ncut(A,B) = 2 - Nassoc(A,B)$ \\
 Approximate Gibbs distribution by neglecting correlations between stochastic variables $\to$ determine "`most similar"' factorized distribution.
 Only consider factorized distributions: 
 $q(\mathbf{Z}) = \prod_{i=1}^{M} q_i(\mathbf{Z}_i)$ \\
+$\to$ no correlations between assignments of different objects.
 Then minimize the Kullback-Leibler divergence to obtain best factorial approximation. \\
 Mean field $h_{u \alpha}$ is the expected cost $\mathcal{R}(c)$ that object $u$ assigned to cluster $\alpha$ 
 
@@ -457,6 +458,33 @@ Mean field $h_{u \alpha}$ is the expected cost $\mathcal{R}(c)$ that object $u$ 
 	\item split cost function $\mathcal{R}$ into terms that contain the object $u$ and other terms. Term has a form like $\mathcal{R}(c) = f(u) + \mathcal{R}(c|u)$
 	\item take the expected value $\mathbb{E}_{\mathbf{Q}_{u \ to \alpha}}$
 \end{enumerate}
+\section*{Approximation set coding}
+\textit{Find robust, informative pattern (hypothesis $c\in \mathcal{C}$ hypothesis space) in data }
+\subsection*{Approximation sets}
+data space $\mathcal{X}$, cost function $\mathcal{R}(c)$, hypothesis $c\in \mathcal{C}$ \\
+solution $c^{\bot}(X) = \text{argmin}_{c \in \mathcal{C}} \mathcal{R}(c)$ is random since $X$ is random. \\
+$\to$ if second set $X'$ is used $\to c^{\bot}(X) \neq c^{\bot}(X') \, \to$ do not commit to a single answer, use set where each hypothesis $c$ has weight. \\
+\subsubsection*{Weights}
+weights $w$rank different hypothesis according to how well they solve problem: \\
+$\forall c, c' \in \mathcal{C} \, \mathcal{R}(c,X) \leq \mathcal{R}(c,X') \Leftrightarrow w_{\beta}(c,X) \geq w_{\beta}(c,X')$ \\
+where approximation precision $\beta$ controls resolution of solutions. \\
+$\to$ set of hypothesis that approximately solve the problem: \\$C_{\beta}(X)= \{c \in \mathcal{C} : \, \mathcal{R} (c,X) - \mathcal{R}(c^{\bot}(X),X) \leq 1/\beta \}$ \\
+i.e. lead to solutions that are $1/\beta$ close to minimum. \\
+assume every $c \in \mathcal{C}_{\beta}$ equally good $\to$ posterior $P_{\beta}(c|X) = \text{unif}(C_{\beta}(X))$ \\
+$\beta \to 0$: every hypothesis good solution $\to$ not informative. \\
+$\beta \to \infty$: each set has only one element $\to$ not robust. \\
+$ \Rightarrow \, \beta$ controls tradeoff between informativeness and robustness/how much posterior distributions agree for different values of $\beta$.
+
+\subsection*{Communication scenario}
+\textit{partition hypothesis space $\mathcal{C}$ with distinguishable approximation sets and use them as symbols for communication}
+\subsubsection*{Codebook generation}
+\textit{Problem:} usually only one set of observations available. $\to$ use set of transformation $\mathbb{T}$: \\
+$\forall t \in \mathbb{T}, \forall c \in \mathcal{C}, \forall{\beta} \in \mathbb{R}_{+} w_{\beta}(t \circ c, t \circ X) = w_{\beta}(c,X)$ \\
+\textbf{Codebook construction: Script p.g 43}
+
+
+\subsubsection*{Communication Protocol}
+
 \vspace{5cm}
 \begin{itemize}
 	\item chain rule for information
