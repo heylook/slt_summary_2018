@@ -1,1 +1,1 @@
-# slt_summary_2018
+# Summary for Statistical Learning Theory at ETH Zurich
