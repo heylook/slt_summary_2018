@@ -1,0 +1,453 @@
+\documentclass[9pt,parskip]{scrartcl}
+%\documentclass[10pt,parskip]{scrartcl}
+\usepackage{calc}
+\usepackage{braket}
+\usepackage[landscape,paper=a3paper,left=2mm, right=2mm,top=1.5mm, bottom = 3mm,includehead,headheight=3.5mm,headsep=1.5mm]{geometry}
+\usepackage{multicol}
+%Fr angepasste Aufzhlungen ohne Abstnde
+\usepackage[alwaysadjust]{paralist}
+
+%
+
+%++++++++++++++++++++++++++++++++++++++ MEINE SACHEN
+\usepackage[ngerman]{babel} % Unterstuetzung fuer deutsche Trennung und
+%   zB Datum-Formatierung
+
+%\usepackage{cmbright} % CMBRIGHT für alles! aus Formeln , weglassen für  Computer Modern und Roman Math 
+\usepackage[utf8]{inputenc} % Einfache Eingabe von Umlauten
+
+\usepackage[T1]{fontenc}
+\renewcommand*\familydefault{\sfdefault}
+
+\usepackage{multirow} % Zeilenzusammen nehmen
+%\usepackage{lpic} % text über grafiken
+
+%\renewcommand\familydefault{\rmdefault}
+\usepackage[]{amsmath}   % diese zwei Pakete werden hier nicht
+\usepackage{amssymb}   % gebraucht sind aber sehr sinnvoll
+\usepackage{amsfonts}
+\usepackage{empheq}
+\usepackage{color}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{float} % for [H]
+\usepackage{arydshln}
+\usepackage[]{algorithm2e}
+\usepackage{bbm}
+%\usepackage{xcolor}
+
+%\usepackage[derived]{SIunits} %Units
+\graphicspath{/}
+%\usepackage{listings}  keine Ahung lol
+
+ %PLATZSPAAREN SPACING 
+\setlength{\parskip}{0pt}
+\setlength{\parsep}{0pt}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% bobs stuff %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{enumitem}
+\setlist{nolistsep} 
+%% code from mathabx.sty and mathabx.dcl
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{
+      <5> <6> <7> <8> <9> <10>
+      <10.95> <12> <14.4> <17.28> <20.74> <24.88>
+      mathx10
+      }{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareFontSubstitution{U}{mathx}{m}{n}
+\DeclareMathAccent{\widecheck}{0}{mathx}{"71}
+\DeclareMathAccent{\wideparen}{0}{mathx}{"75}
+
+\def\cs#1{\texttt{\char`\\#1}}
+
+\usepackage{cancel}
+\setlength{\arraycolsep}{2pt}
+\setlength{\tabcolsep}{2pt}
+\usepackage[dvipsnames]{xcolor}
+
+\usepackage{pbox}
+\usepackage{fancybox}
+
+\newcommand*{\Scale}[2][4]{\scalebox{#1}{$#2$}}%
+\newcommand*{\Resize}[2]{\resizebox{#1}{!}{$#2$}}%
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage[]{titlesec} % SPACING überall definieren
+\titlespacing*{\section}{0pt}{0.15cm}{0.15cm} %indent,space befor, space after
+\titlespacing*{\subsection}{0pt}{3pt}{3pt}
+\titlespacing*{\subsubsection}{0pt}{0.15cm}{0pt}
+\titleformat*{\section}{\fontencoding{OT1}\fontfamily{cmr} \fontseries{bx}\fontshape{sc} \fontsize{14pt}{14pt} \selectfont \color{Bittersweet}}%italic
+\titleformat*{\subsection}{\fontencoding{OT1}\fontfamily{cmr} \fontseries{bx}\fontshape{sc} \fontsize{12pt}{12pt} \selectfont \color{YellowOrange}} %italic
+\titleformat*{\subsubsection}{\fontencoding{OT1}\fontfamily{cmr} \fontseries{bx}\fontshape{sc} \fontsize{8pt}{8pt} \selectfont} %italic
+\def\thesection{\arabic{subsection}}
+\def\thesubsection{\arabic{subsection}}
+
+%\setlength\headsep{9pt}
+\setlength\columnseprule{0.5pt}
+
+% Abstände vor und nach Grafiken verkleinern
+\usepackage[belowskip=-15pt,aboveskip=0pt]{caption}
+\setlength{\intextsep}{2pt plus 2pt minus 0pt}
+
+%\setlength{\abovedisplayskip}{0pt}
+%\setlength{\abovedisplayshortskip}{2pt}
+%\setlength{\belowdisplayskip}{5pt}
+%\setlength{\belowdisplayshortskip}{2pt}
+
+%Macros reinladen
+\include{macros} 
+\include{def}
+
+
+%%Header
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\rhead{Christoph Zuidema 13-913-314 czuidema@student.ethz.ch}
+\lhead{Page \thepage}
+\chead{Statistical Learning Theory - Summary}
+
+%++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+\newcommand{\E}{\textrm{E}}
+\newcommand{\V}{\textrm{Var}}
+
+\makeatletter
+\g@addto@macro\normalsize{%
+  \setlength\abovedisplayskip{0pt}
+  \setlength\belowdisplayskip{0pt}
+  \setlength\abovedisplayshortskip{0pt}
+  \setlength\belowdisplayshortskip{0pt}
+}
+\makeatother
+
+\begin{document}
+\begin{multicols*}{4}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%	System theory basics
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section*{Basics}
+\subsection*{General}
+\textit{Cauchy-Schwartz Inequality: }$|u\cdot v|\le \|u\|\|v\|$
+\subsection*{Probability Basics}
+$\Pr[a\leq X\leq b]=\int _{a}^{b}f_{X}(x)\,dx$ \\
+\textit{Cumulative distribution function: } $F_{X}(x)=\operatorname {P} (X\leq x) =\int _{-\infty }^{x}f_{X}(t)\,dt$ \\
+\textit{Bayes: } $p(\theta |x)={\frac {p(x|\theta )p(\theta )}{p(x)}} = p(\text{model} | \text{data} )={\frac {p( \text{data}|\text{model} )p(\text{model})}{p(\text{data})}} $ \\
+$\text{Posterior probability} \propto \text{Likelihood} \times \text{Prior probability}$ \\
+\textit{Markov inequality} $\mathbb{P}(g(X) \geq r) \leq \dfrac{\mathbb{E}[g(X)]}{r}$ \\
+\textit{Chebyshev inequality} $\mathbb{P}(|X-\mu|\geq \epsilon) \leq \frac{\sigma^2}{\epsilon^2}$ \\
+\textit{Jensen inequality} $\varphi \left(\operatorname {E} [X]\right)\leq \operatorname {E} \left[\varphi (X)\right]$ where $\varphi$ is a \textit{convex} function. E.g. $log(x)$ if $x > 0$ \\
+\textit{Law of large numbers} $\mathbb{P}(|\frac{S_n}{n}-\mu|\geq \epsilon) \leq \frac{\sigma^2}{n \cdot \epsilon^2} \to 0$ if $n \to 0$ \\
+\textit{Bound on disjunction: }$\max{\mathbb{P}(A_1), \dots , \mathbb{P}(A_n)} \leq \mathbb{P}(E) \leq \min{1, \mathbb{P}(A_1) + \dots + \mathbb{P}(A_n)}$
+
+\textit{Glivenko-Catelli theorem: }$\mathbb{P}(\sup_{x} | F_{n}(x) - F(x)| \to 0)=1$ if $n \to 0$.
+\subsection*{Maximization Basics}
+\subsubsection*{Calculus of Variations}
+Goal: find the maximum of a functional. \\
+$J(x + \delta x) - J(x) = 0$ \\
+Given: functional of form 
+$J[f]=\int _{a}^{b} L[x,f(x),f'(x)] dx $ \\
+change $\delta J = \int_a^b  \frac{\delta J}{\delta f(x)} \delta f(x) dx $ \\
+functional derivative: $\frac{\delta J}{\delta f(x)} = \frac{\partial L}{\partial f} -\frac{d}{dx} \frac{\partial L}{\partial f'} $
+\subsubsection*{EM-Algorithm}
+\textit{given}: $p(\mathbf{X},\mathbf{Z}|\mathbf{\theta})$ with observed variables $\mathbf{X}$ and latent variables $\mathbf{Z}$, parameters $\mathbf{\theta}$
+\textit{goal:} maximize likelihood function $p(\mathbf{X}|\mathbf{\theta})$ wrt. $\mathbf{\theta}$.
+\begin{enumerate}
+	\item choose initial setting for $\boldsymbol{\theta}^{old}$
+	\item \textbf{E-step:} evaluate $p(\mathbf{X},\mathbf{Z}|\boldsymbol{\theta}^{old})$
+	\item \textbf{M-step:} $\boldsymbol{\theta}^{new}) = \text{argmax}_{\theta} \mathcal{Q}(\boldsymbol{\theta}, \boldsymbol{\theta}^{old})$ where $\mathcal{Q}(\boldsymbol{\theta}, \boldsymbol{\theta}^{old}) = \sum_{\mathbf{Z}} p(\mathbf{Z}|\mathbf{X},\boldsymbol{\theta}^{old}) ln(p(\mathbf{X}|\boldsymbol{\theta}))$
+	\item check if converged. Otherwise set $\boldsymbol{\theta}^{old} \leftarrow \boldsymbol{\theta}^{new}$
+\end{enumerate}
+
+\subsection*{Information Theory}
+\textit{Mutual information: } \\
+measures the amount of information that can be obtained about one random variable by observing another \\
+$I(X;Y)=\mathbb {E} _{X,Y}[SI(x,y)]=\sum _{x,y}p(x,y)\log {\frac {p(x,y)}{p(x)\,p(y)}}$ \\
+$I(X;Y)=H(X)-H(X|Y).\,$ \\
+$I(X;Y)=I(Y;X)=H(X)+H(Y)-H(X,Y).\,$ \\
+$I(X,Y;Z) = I(X;Z) + I(Y;Z|X)$\\
+\textit{chain rule for information: }$I(X;Y,Z)=I(X;Z)+I(X;Y|Z)$ \\
+$I(X;Y)=\mathbb {E} _{p(y)}[D_{\mathrm {KL} }(p(X|Y=y)\|p(X))].$ \\
+\textit{Information Processing Inequality: } Let $X \rightarrow Y \rightarrow Z$ be a Markov Chain, then $I(x,z) \leq I(x,y)$
+\subsection*{Kullback-Leibler divergence}
+\begin{itemize}
+	\item quantifies coding cost describing data with probability distribution $q$ when true distribution is $p$.
+	\item KL divergence is positive semidefinite. $D_{\mathrm {KL} } \geq 0$
+\end{itemize}
+way of comparing two distributions: a "true" probability distribution $p(X)$, and an arbitrary probability distribution $q(X)$. \\
+or: "unnecessary surprise". \textbf{not} symmetric! \\
+q(X) is the distribution underlying some data, when, in reality, p(X) is the correct distribution, the Kullback–Leibler divergence is the number of average additional bits per datum necessary for compression. \\
+$D_{\mathrm {KL} }(p(X)\|q(X))=\sum _{x\in X}-p(x)\log {q(x)}\,-\,\sum _{x\in X}-p(x)\log {p(x)}=\sum _{x\in X}p(x)\log {\frac {p(x)}{q(x)}}$ \\
+continuous case: $D_{\mathrm {KL} }(P\|Q)=\int _{-\infty }^{\infty }p(x) \log {\frac {p(x)}{q(x)}} dx$ \\
+
+
+
+\section*{Dimensionality Reduction}
+\subsection*{Principal Component Analysis (PCA)}
+\subsubsection*{Idea}
+dimensionality reduction with orthogonal projection of D-dimensional data onto lower M-dimensional linear space (\textit{principal subspace}). Variance is maximized.
+\subsubsection*{Procedure}
+\begin{enumerate}
+	\item calculate mean $\bar{x} = \frac 1 N \sum_{n=1}^{N}x_n$ and covariance matrix \textbf{S} of data set
+	\item find the $M$ eigenvectors corresponding to the $M$ largest eigenvalues.
+	\item data projected on these eigenvectors have largest variance.
+\end{enumerate}
+\subsection*{Probabilistic Principal Component Analysis (PPCA)}
+\subsubsection*{Idea}
+$\mathbf{x} = \mathbf{Wz} + \boldsymbol{\mu} + \boldsymbol{\epsilon} $, with $p(\mathbf{z}) = \mathcal{N}(\mathbf{z}|\mathbf{0,I})$ and $\epsilon ~ \mathcal{N}(0, \sigma^2\mathbf{I})$ \\
+$p(\mathbf{x}|\mathbf{z}) = \mathcal{N}(\mathbf{x}|\mathbf{Wz} + \boldsymbol{\mu}, \sigma^2\mathbf{I}) $
+\subsubsection*{Procedure}
+\begin{enumerate}
+	\item calculate mean $\bar{x} = \frac 1 N \sum_{n=1}^{N}x_n$ and covariance matrix \textbf{S} of data set
+	\item find the $M$ eigenvectors corresponding to the $M$ largest eigenvalues.
+	\item data projected on these eigenvectors have largest variance.
+\end{enumerate}
+\subsubsection*{Advantages}
+\begin{itemize}
+	\item computationally efficient $\to$ no need to evaluate covariance matrix as intermediate step
+	\item allows us to deal with missing data in data set
+\end{itemize}
+
+
+\subsection*{Locally Linear Embedding}
+$N$ real valued vector $\vec{X}_i $ of dimension $D$.\\
+\textit{Assumption: } data lies close on locally linear patch of manifold. \\
+Construct each data point form its $K$ nearest (e.g. euclidean distance) neighbors. \\
+\textit{Reconstruction error: }$\mathcal{E} (W) = \sum_i |\vec{X}_i -  \sum_j W_{ij} \vec{X}_j|$ \\
+where $W_{ij}$ summarize the contribution of the $j$th data point to
+the $i$th reconstruction. \\
+\underline{\textit{LLE Algorithm: }} \\
+\shadowbox{
+\parbox{0.95\linewidth}{
+\begin{minipage}{0.75\linewidth}
+\begin{enumerate}
+\item Compute the neighbors of each data point, $\vec{X}_i $.
+\item Compute the weights $W_{ij}$ that best reconstruct each data point $\vec{X}_i$ from its neighbors, minimizing the cost $\mathcal{E} (W) $ by constrained linear fits. We have $w_{ij} = \frac{\sum_k C_{jk}^{(-i)}}{\sum_{lk}C_{lk}^{(-i)}}$, where $C_{jk}^{(i)} = (x_i - x_j)^T(x_i - x_k)$
+\item Compute the vectors $\vec{Y}_i$ best reconstructed by the weights $W_{ij}$, minimizing the quadratic form in $\Phi(Y) = \sum_i |\vec{X}_i -  \sum_j W_{ij} \vec{Y}_j|^2$ by its bottom nonzero eigenvectors.
+The embedding vectors are given by the eigenvectors corresponding to the d+1 smallest eigenvalues of $M = (1 - W)^T(1-W)$
+
+\end{enumerate}
+\end{minipage}
+}
+}
+\section*{Maximum Entropy Inference}
+\textit{Maximizing entropy yields least biased inference method $\to$ maximally noncommittal wrt. missing data. }
+\subsection*{Maximum entropy distribution}
+\subsubsection*{Idea}
+Outcomes $\omega_i \in \Omega$, determine probabilities $p_i = \mathbb{P}(\omega_i)$.
+Given constraints/moments $\mu_i = \mathbb{E}[r_j] = \sum_{i=1}^n r_j(\omega_i)p_i$, where $r_j : \Omega \to \mathbb{R} j = 1, 2, ..., n$ are different functions defined over $\Omega$. 
+\subsubsection*{Gibbs distribution}
+\textit{minimal sesitivity to changes in constraint moments $\mu_i$} \\
+$p(x) = \frac 1 Z \text{exp}(- \sum_{j=1}^m \lambda_j r_j(x))$ where $m$ is the number of constraints. \\
+
+$Z = \int_x \text{exp}(- \sum_{j=1}^m \lambda_j r_j(x)) dx$
+\subsubsection*{Derive least sensitive distributions}
+\begin{enumerate}
+	\item determine all $r_j$ from constraints.
+	\item calculate $Z$ and $p(x)$ from Gibbs distribution
+	\item calculate all moments and set equal to constraints.
+\end{enumerate}
+
+For a general cost function:
+\[\mathbf{P}(\mathbf{c}) = \frac{e^{-\beta \mathcal{R}(c)}}{\sum_{c' \in \mathcal{C} e^{-\beta \mathcal{R}(c')}}} = \frac{e^{-\beta \mathcal{R}(c)}}{Z} = \text{exp}(- \beta (\mathcal{R}(c)- \mathcal{F})) \]
+where $\mathcal{F} = -\frac 1 \beta \text{log}(Z)$ is known as "`free energy"'. \\
+Free energy for any distribution: $\mathcal{F} = - \frac 1 \beta S(\mathbf{P}) + \mathbb{E}_{\mathbf{P}} \mathcal{R} $
+\subsection*{Entropy}
+$H_X$ of a discrete random variable $X$ is a measure of the amount of \textit{uncertainty} associated with the value of $X$ when only its distribution is known \\
+$H(X)=\mathbb {E} _{X}[I(x)]=-\sum _{x\in \mathbb {X} }p(x)\log p(x)$ \\
+\textit{Chain rule: } $ H(X,Y) = H(X) + H(Y|X) $ \\
+$H(X,Y|Z) = H(X|Z) + H(Y|X,Z)$
+
+\subsection*{Maximum Entropy Clustering}
+\subsubsection*{Idea}
+Determine probabilistic centroids $y_{\alpha}$ and probabilistic assignments $P_{i \alpha}$ of $i$-th object to cluster $\alpha$. Data $\mathcal{X}$ and labelings $c$ are r.v.
+
+\subsubsection*{Procedure}
+\begin{enumerate}
+	\item Define posterior probability distribution $P(c|\mathcal{X},\mathcal{Y})$, $c \in \mathcal{C}$, constraint $\mathbb{E}_{P(c|\mathcal{X},\mathcal{Y})} \mathcal{R}(c,\mathcal{X},\mathcal{Y}) = \mu$ where $\mu$ is a constant.
+	\item find centroid conditions and assignments $P_{i \alpha}$ by maximizing entropy wrt. $\mathcal{Y}$ $\to$ $\frac{\partial }{\partial \mathbf{y}_{\alpha}} H(P(c|\mathcal{X},\mathcal{Y})) = \mathbf{0}$
+\end{enumerate}
+Most agnostic $P(c|\mathcal{X},\mathcal{Y})$ is Gibbs distribution.  \\
+
+\[P(c|\mathcal{X},\mathcal{Y})=\frac{\text{exp}(-\mathcal{R}(c,\mathcal{X},\mathcal{Y})/T)}{\sum_{c' \in \mathcal{C}} \text{exp}(-\mathcal{R}(c',\mathcal{X},\mathcal{Y})/T)}\]
+\textit{Remark:} If the cost function is linear in individual costs, posterior can be factorized!
+
+\subsection*{Clustering distributional data}
+\subsubsection*{Idea}
+"`Close"' objects have similar feature distributions. $\to$ cluster via similarity. \\
+Distributional data encoded in dyads (pair $(x_i, y_i) \in \mathcal{X} \times \mathcal{Y} $): $n$ different objects $\{x_i\} \in \mathcal{X}$, $m$ possible feature values $\{y_i\} \in \mathcal{Y}$. Data is set of $l$ observations $\mathcal{Z} = \{ (x_{i(r)}, y_{j(r)})\}_{r=1}^{l}$. \\
+Likelihood of data $\mathcal{Z}$ $\mathcal{L}(\mathcal{Z}) = \Pi_{i \leq n} \Pi_{j \leq m} P((i,j)|c(i),Q)^{l\hat{P}(i)}$ \\
+where $l\hat{P}(i) =$ \# object $i$ exhibits value $j$ and $\hat{P}(i) $ = empirical probability finding object $i$ with feature value $j$.
+
+\subsubsection*{Procedure}
+\begin{enumerate}
+	\item 
+\end{enumerate}
+
+\subsection*{Parametric distributional clustering}
+Density estimation is assumed to be Gaussian $g_a(y)$. \\
+$p(y| \nu) = \sum_{a \leq s} g_a(y) p(a|\nu)$ where $p(a|\nu)$ mixture coefficients, $s$ number of mixture components.\\
+\textit{Remark:} Often feature values are restricted to specific domains, mixture components $\to$ rectified.
+
+
+\subsection*{Markov Chain Monte Carlo (MCMC)}
+\textit{Idea:} sampling from a probability distribution by constructing a Markov chain that has the desired distribution as its equilibrium distribution. 
+
+\subsubsection*{Markov Chain}
+
+$P_N (x_1,... ,x_N ) = p_1(x1) \prod^{N-1}_{t=1} w(x_t \to x_{t+1})$ \\ 
+where $\{p_1(x)\}_{x \in \mathcal{X}}$ is the initial state and $\{w(x \to y)\}_{x,y \in \mathcal{X}}$ are the
+transition probabilities \\
+ transition probabilities must be
+non-negative and normalized:
+$\sum_{y \ in \mathcal{X}} w(x \to y) = 1 , \text{for any } y \in \mathcal{X}$
+\textit{Eigenvalues: }\\
+First eigenvalue is always equal to 1. The smaller $\lambda_2$ the faster the MCMC converges. \\
+\textit{irreducible: } It is possible to get to any state from any state \\
+\textit{Detailed balance: } $\pi _{i}P_{ij}=\pi _{j}P_{ji}$ or $p(x) (x \to y) = p(y) p(y \to x)$, implies stationarity! \\
+\textit{Stationarity: } $\pi \mathbf {P} =\pi$ \\
+\textit{Aperiodic: } Chain should not get trapped in cycles \\
+
+
+\subsubsection*{Metropolis-Hastings}
+Initialization: Choose an arbitrary point $x_0$ as first sample, choose arbitrary probability density $g(x|y)$ that suggests a candidate for the next sample value x. For Metropolis algorithm, g must be symmetric $\to g(x|y)=g(y|x)$ e.g. a Gaussian distribution centered at y, $\to$ points closer to y more likely to be visited next $\to$ sequence of samples $\to$ random walk. function g $\to$ proposal density or jumping distribution. \\
+\underline{\textit{Algorithm: }} \\
+\shadowbox{
+\parbox{0.95\linewidth}{
+\begin{minipage}{0.75\linewidth}
+\begin{enumerate}
+\item Generate a new sample $x'$ from the old $x$ according to a proposal PDF: $x' \sim q(\, \mid x)$
+\item Calculate acceptance probability $A(x',x)$ according to quotient $ Q(x',x) = \frac{p(x')q(x|x')}{p(x)q(x'|x)} $  $A(x' ,x) = min(1,Q(x',x))$
+\item Accept $x'$ as new sample with with probability $A(x',x)$, else keep $x$.
+\end{enumerate}
+\end{minipage}
+}
+}
+\textit{Disadvantages:}
+\begin{itemize}
+	\item samples are correlated. For independent samples one would have to take only every \textit{n}-th sample.
+	\item initial samples may follow a very different distribution. Solution: throw away first 1000 samples.
+	\item  for high dimensions: finding the right jumping distribution can be difficult, as the different individual dimensions behave in very different ways, and the jumping width must be "just right" for all dimensions at once to avoid excessively slow mixing $\to$ Gibbs Sampling.
+\end{itemize}
+
+\subsubsection*{Gibbs Sampling}
+given a multivariate distribution it is simpler to sample from a conditional distribution than to marginalize by integrating over a joint distribution. \\
+Applicable if:
+\begin{itemize}
+	\item conditional distribution of each variable is known and is easy (or at least, easier than joint distribution) to sample from
+	\item 
+\end{itemize}
+ simulated annealing is often used to reduce the "random walk" behavior in the early part of the sampling process
+
+\subsubsection*{Heat-Bath Algorithm}
+
+\subsection*{Simulated Annealing}
+\subsubsection*{Idea}
+\begin{itemize}
+	\item Markov process samples solution from solution space $\Omega$
+	\item cost function $\mathcal{H}: \Omega \to \mathbb{R}, \omega \in \Omega$ denotes admissible solution.
+	\item solutions accepted/rejected according to Metropolis algorithm: decreased cost $\to$ accepted, increased cost $\to$ accepted with probability $exp(- \Delta \mathcal{H}/T)$ where $\Delta \mathcal{H} = \mathcal{H}(\omega_{new}) - \mathcal{H}(\omega_{old}) $. $T$ is the computational temperature.
+	\item reduce gradually the temperature during search proces $\to$ force system into solution with low costs. $\to$ random walk in solution space.
+\end{itemize}
+Markov process with converges to equilibrium: \\
+$\mathbf{P^{Gb}(\omega)} = \text{exp}(-(\mathcal{H}(\omega) - \mathcal{F}(\mathcal{H}))/T )$ \\
+where $\mathcal{F}(\mathcal{H})) = -T log \sum_{\omega' \in \Omega} \text{exp}(-\mathcal{H}(\omega')/T )$
+\subsubsection*{Remarks}
+\begin{itemize}
+	\item Temperature formally $\approx$ Lagrange parameter $\to$ constraint on expected costs. $\braket{H} = \sum_{\omega \in \Omega} P^{Gb}(\omega)  \mathcal{H}(\omega)$
+	\item Gibbs free energy related to expected cost via entropy $\mathcal{S}(P^{Gb}) = -\sum_{\omega \in \Omega} P^{Gb}(\omega)  \text{log} (P^{Gb}(\omega) ) = \frac 1 T \braket{H} - \frac 1 T \mathcal{F}(\mathcal{H})$
+\end{itemize}
+\subsection*{Deterministic Annealing}
+\subsubsection*{Idea}
+deterministic variant of \textit{Simulated annealing}.
+
+\subsection*{Information Bottleneck Method}
+\subsubsection*{Idea}
+input signal $X$ should be efficiently encoded by e.g. cluster variable $\tilde{X}$ preserving relevant information about context variable $Y$ as good as possible.
+
+$ I(X; \tilde{X}) - \lambda I(\tilde{X}, Y)$
+
+\subsection*{Parametric Distributional Clustering}
+\subsubsection*{Idea}
+cluster set of $n$ objects $\mathbf{o}_i$ in $k$ groups. Assignments encoded in $M_{i, \nu}$, $M_{i, \nu} = 1$ if $\mathbf{o}_i$ assigned to cluster $\nu$. Enforce $\sum_{\nu \leq k} M_{i, \nu} = 1$.
+
+\section*{Graph based clustering}
+\textit{relations among objects not necessarily metric.}
+\subsubsection*{Idea}
+$\mathcal{O}$ is the set of vertices $\mathcal{V}$, set of edges is inferred, set of (di)similarity measures $\mathcal{D}=\{D_{ij}\}$ or $\mathcal{S}=\{S_{ij}\}$ are the weights. \\
+Cluster defined as: $\mathcal{G}_{\alpha} \{ \mathbf{o} \in \mathcal{O} : c( \mathbf{O}) = \alpha\}$
+\subsection*{Correlation Clustering}
+\subsubsection*{Idea}
+agreement within cluster, disagreement between clusters maximized. \\
+Script p. 30
+\subsection*{Pairwise Data Clustering}
+cost function: 
+\[\mathcal{R}^{pc}(c, \mathcal{D}) = \frac 1 2 \sum_{\nu \leq k} \left( |\mathcal{G}_{\nu}| \sum_{(i,j)} \in \epsilon_{\nu \nu} \frac{D_{ij}}{|\epsilon_{\nu \nu}|} \right) \]
+\textit{Remarks:} 
+\begin{itemize}
+	\item dissimilarity matrix $\mathcal{D}_{ij}$ only zero for self-dissimilarity entries, $|\mathcal{G}_{\nu}|, |\epsilon_{\nu \nu}|$ cardinality of cluster/edges. 
+	\item cost function invariant under symmetrization and constant/additive shifts of non-diagonal elements
+	\item metric data can always be transformed to PC data but not always vice versa
+\end{itemize}
+$ \Rightarrow $ embed given nonmetric proximity data problem in vector space without changing underlying properties. $\rightarrow$ see CSE.
+\subsection*{Constant Shift Embedding (CSE)}
+\textit{Embed pairwise clustering problem into vector space.}
+\subsubsection*{CSE algorithm}
+\begin{enumerate}
+	\item given dissimilarity matrix $D$, calculate centralized version $D^c = QDQ$ where $Q = I_n - \frac{1}{n} e_n e_n^T$
+	\item calculate matrix $S^c = - 1/2 D^c$
+	\item calculate eigenvalues of $S^c$. If $S^c$ isn't positive semidefinite, $\tilde{S} = S^c - \lambda_n \cdot I_n$ (subtract smallest eigenvalue from diagonal elements)
+	\item 
+\end{enumerate}
+
+\textit{Remarks:}
+\begin{itemize}
+	\item embedding validity shows equivalence to k-means clustering, ideas of centroids and cluster representatives can be used
+	\item pairwise data can be denoised when transformed into vectorial data. (e.g. in preprocessing)
+	\item minimization processes pairwise cost function or k-means problem is $\mathcal{N}\mathcal{P}$-hard $\to$ algorithms like deterministic annealing and mean field approximation needed. For $\mathcal{R}^{km}$ it's exact, for $\mathcal{R}^{pc}$ remains an approximation.
+\end{itemize}
+
+\subsection*{Cut}
+Partitioning a graph $G(V,E)$ with nodes $V$ and edges $E$ into disjoint sets $A,B$ $\to$ removing edges connecting parts. Degree of dissimilarity is computed as total weight of removed edges: \\
+$cut(A,B) = \sum_{u \in A, v \in B} w(u,v)$ \\
+\textit{Minimum cut: } optimal bipartitioning of graph that minimizes cut value. \\
+Note: Minimum cut favors cutting small sets of isolated nodes in graph. $\to $ use normalized cut.
+\subsection*{Normalized Cut}
+$Ncut(A,B) = \frac{cut(A,B)}{assoc(A,V)} + \frac{cut(A,B)}{assoc(B,V)}$ where $assoc(A,V) = \sum_{u \in A, t \in V} w(u,t) $
+\textit{Ncut(A,B)} can be seen as the disassociation between two groups. \\
+ measure for total
+normalized association within groups for a given partition:\\
+$Nassoc(A,B) = \frac{assoc(A,A)}{assoc(A,V)} + \frac{assoc(B,B)}{assoc(B,V)}$ where $assoc(A,A) $ are the total weights of edges connecting nodes within A, B respectively. Measures how tightly on average nodes are connected within group. \\
+$Ncut(A,B) = 2 - Nassoc(A,B)$ \\
+\subsection*{Computing Optimal Partition}
+
+\subsection*{Grouping algorithm}
+
+\section*{Mean Field Approximation}
+\subsection*{Mean Field Theory}
+Approximate Gibbs distribution by neglecting correlations between stochastic variables $\to$ determine "`most similar"' factorized distribution.
+Only consider factorized distributions: 
+$q(\mathbf{Z}) = \prod_{i=1}^{M} q_i(\mathbf{Z}_i)$ \\
+Then minimize the Kullback-Leibler divergence to obtain best factorial approximation. \\
+Mean field $h_{u \alpha}$ is the expected cost $\mathcal{R}(c)$ that object $u$ assigned to cluster $\alpha$ 
+
+\subsubsection*{Determine mean field}
+\begin{enumerate}
+	\item split cost function $\mathcal{R}$ into terms that contain the object $u$ and other terms. Term has a form like $\mathcal{R}(c) = f(u) + \mathcal{R}(c|u)$
+	\item take the expected value $\mathbb{E}_{\mathbf{Q}_{u \ to \alpha}}$
+\end{enumerate}
+\vspace{5cm}
+\begin{itemize}
+	\item chain rule for information
+\end{itemize}
+\end{multicols*}
+\end{document}
+
+

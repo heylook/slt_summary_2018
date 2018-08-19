@@ -1,0 +1,174 @@
+%% MACROS %%
+
+\def\(({\left(}
+\def \xyz{ \(( \begin{array}{ccc }
+    x \\
+  y \\
+  z
+\end{array}\))
+}
+\def \sphere{ \(( \begin{array}{ ccc}
+    r \\
+  \theta \\
+  \phi
+\end{array} \))
+}
+\def\)){\right)}
+\newcommand{\diffn}[2]{\frac{d \ #1}{d  #2}}
+\newcommand{\diffp}[2]{\frac{\partial  #1}{\partial   #2}}
+
+\newcommand{\myv}[3]{ \(( \begin{array}{ccc}
+    #1 \\
+  #2 \\
+  #3
+\end{array}\))
+}
+
+\newcommand{\bild}[3]{
+\begin{figure}[H]  
+ \centering
+    \includegraphics[#3]{#1}
+    \caption{#2}
+\end{figure}
+}
+
+\newcommand{\bildlabel}[4]{
+\begin{figure}[h]  
+ \centering
+    \includegraphics[#3]{#1}
+    \caption{#2}
+    \label{#4}
+\end{figure}
+}
+
+\newcommand{\bildo}[2]{
+\begin{figure}[H]  
+ \centering
+    \includegraphics[#2]{#1}
+\end{figure}
+}
+
+\newcommand{\un}{\underline}
+%Fr fbox:
+\newcommand{\f}{\fbox}
+
+
+\newcommand{\ra}{\rightarrow}
+\newcommand{\s}{\sigma}
+\newcommand{\e}{\epsilon}
+
+\newcommand{\al}[1]
+{\begin{align*}
+#1
+\end{align*}
+}
+
+\newcommand{\aln}[1]
+{\begin{align}
+#1
+\end{align}
+}
+
+%% Emphasize Math ==============================
+\definecolor{insidecolor}{rgb}{0.93,0.93,0} 
+\definecolor{border}{rgb}{0,0,0}
+ 
+\newcommand*\mybluebox[1]{% 
+\fcolorbox{border}{insidecolor}{\hspace{1em}#1\hspace{1em}}
+}
+
+\newcommand{\eal}[1]
+{\begin{empheq}[box=\mybluebox]{align*} 
+#1
+\end{empheq}
+}
+
+\newcommand{\ealn}[1]
+{\begin{empheq}[box=\mybluebox]{align} 
+#1
+\end{empheq}
+}
+
+\newcommand{\emult}[1]
+{\begin{empheq}[box=\mybluebox]{multline*} 
+#1
+\end{empheq}
+}
+\newcommand{\emultn}[1]
+{\begin{empheq}[box=\mybluebox]{multline} 
+#1
+\end{empheq}
+}
+%==========================================
+
+\newcommand{\tsf}[1]
+{\textsf{#1}
+}
+
+\newcommand{\tbf}[1]
+{\textbf{#1}
+}
+
+
+\newcommand{\fal}[1]
+{\begin{flalign*}
+#1
+\end{flalign*}
+}
+
+\newcommand{\ocirc}[1]{\buildrel _{\circ} \over {\mathbf{#1}}}
+
+\newenvironment{fminipage}%
+{\begin{Sbox}\begin{minipage}}%
+{\end{minipage}\end{Sbox}\fbox{\TheSbox}}
+
+
+
+\newenvironment{mybulletlist}
+{%begin
+\begin{list}{\RIGHTarrow}
+{\setlength{\topsep}{0cm} 
+\setlength{\parsep}{2mm}
+\setlength{\leftmargin}{1.5cm}
+\setlength{\rightmargin}{0cm}
+\setlength{\labelwidth}{2cm} 
+\setlength{\labelsep}{0.5cm}}
+}
+{%end
+\end{list} 
+}
+
+\newcounter{linie}
+\newenvironment{mynumberlist}
+{%begin
+
+\begin{list}{\thelinie .} 
+{\usecounter{linie} 
+\setlength{\topsep}{0cm} 
+\setlength{\parsep}{4mm}
+\setlength{\leftmargin}{2cm}
+\setlength{\rightmargin}{1.5cm}
+\setlength{\labelwidth}{2cm} 
+\setlength{\labelsep}{0.5cm}} 
+}
+{%end
+\end{list} 
+}
+
+\newenvironment{mybulletlistref}
+{%begin
+\begin{list}{$\mathbf{\dashrightarrow}$}
+{\setlength{\topsep}{0cm} 
+\setlength{\parsep}{4mm} 
+\setlength{\leftmargin}{2cm}
+\setlength{\rightmargin}{1.5cm}
+\setlength{\labelwidth}{2cm} 
+\setlength{\labelsep}{0.5cm}}
+}
+{%end
+\end{list} 
+}
+
+
+
+%% MACROS %% end
