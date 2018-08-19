@@ -489,8 +489,18 @@ $\forall t \in \mathbb{T}, \forall c \in \mathcal{C}, \forall{\beta} \in \mathbb
 \begin{itemize}
 	\item chain rule for information
 \end{itemize}
+\section*{Model Selection}
+\textit{Minimum Description Length: } $-log p (x|\theta_k) - log p(\theta_k)$ \\
+
+\textit{Bayesian Information Criterion:} $-2 log (\hat p | \hat \theta_k, \mathcal{M}_k)  + k log n$, where $\mathcal{M}_k$ is one of the possible model classes. \\
+\textit{Gap Statistic:} $gap_n(k) := E_n^*[log(W_k)] - log(W_k)$, where $W_k = \sum_{\eta}\frac{1}{2n_{\eta}} \sum_{i,j \in \epsilon_{\eta \eta}} D_{ij}$ and $D_{ij} = ||x_i -x_j||^2$
+The optimal k can then be chosen as: $k^* = min[k|gap_n(k) \geq gap_n(k+1) - \sigma_{k+1}]$
+
 \end{multicols*}
+
+
 \end{document}
+
 
 
 
