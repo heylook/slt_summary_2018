@@ -125,17 +125,12 @@
 \begin{document}
 \begin{multicols*}{4}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%	System theory basics
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 
 \section*{Basics}
 \subsection*{General}
-\textit{Cauchy-Schwartz Inequality: }$|u\cdot v|\le \|u\|\|v\|$
+\textit{Cauchy-Schwartz Inequality: }$|u\cdot v|\le \|u\|\|v\|$ \\
+\textit{Gauss distribution:}\\
+$f_{\mathbf{X} }(x_{1},\ldots ,x_{k})=\frac {\exp \left(-{\frac {1}{2}}({\mathbf {x} }-{\boldsymbol {\mu }})^{\mathrm {T} }{\boldsymbol {\Sigma }}^{-1}({\mathbf {x} }-{ \boldsymbol {\mu }})\right)}{\sqrt {(2\pi )^{k}|{\boldsymbol {\Sigma }}|}}$ 
 \subsection*{Probability Basics}
 $\Pr[a\leq X\leq b]=\int _{a}^{b}f_{X}(x)\,dx$ \\
 \textit{Cumulative distribution function: } $F_{X}(x)=\operatorname {P} (X\leq x) =\int _{-\infty }^{x}f_{X}(t)\,dt$ \\
@@ -455,6 +450,9 @@ $ \Rightarrow $ embed given nonmetric proximity data problem in vector space wit
 \subsection*{Constant Shift Embedding (CSE)}
 \textit{Embed pairwise clustering problem into vector space.}
 \subsubsection*{CSE algorithm}
+\shadowbox{
+\parbox{0.95\linewidth}{
+\begin{minipage}{0.75\linewidth}
 \begin{enumerate}
 	\item given dissimilarity matrix $D$, calculate centralized version $D^c$ (3.13)
 	\item calculate matrix $S^c = - 1/2 D^c$ (Lemma 3)
@@ -466,12 +464,42 @@ $ \Rightarrow $ embed given nonmetric proximity data problem in vector space wit
 	\item The rows of $X_p = V_p (\Lambda_p)^{1/2}$ are the p-dimensional embedding vectors of the data. $V_p$ are the first $p$ eigenvectors.
 \end{enumerate}
 
+\end{minipage}
+}
+}
+
 \textit{Remarks:}
 \begin{itemize}
 	\item embedding validity shows equivalence to k-means clustering, ideas of centroids and cluster representatives can be used
 	\item pairwise data can be denoised when transformed into vectorial data. (e.g. in preprocessing)
 	\item minimization processes pairwise cost function or k-means problem is $\mathcal{N}\mathcal{P}$-hard $\to$ algorithms like deterministic annealing and mean field approximation needed. For $\mathcal{R}^{km}$ it's exact, for $\mathcal{R}^{pc}$ remains an approximation.
 \end{itemize}
+
+\subsubsection*{Reconstructing the embedded vectors}
+\shadowbox{
+\parbox{0.95\linewidth}{
+\begin{minipage}{0.75\linewidth}
+\begin{enumerate}
+	\item calculate centralized dot product matrix $\tilde{S}^c = -\frac 1 2 Q \tilde{D} Q$ from matrix of squared Eucledian distances $\tilde{D}$.
+	\item Express in its eigenbasis $\tilde{S}^c = V\Lambda V^T$, $V = (v_1, ..., v_n)$ contains eigenvectors $v_i$, $\Lambda = diag(\lambda_1, ..., \lambda_n)$ diagonal matrix of eigenvalues and $\lambda_1 \geq ... \geq \lambda_p > \lambda_{p+1} = ... = \lambda_n = 0$, at least one eigenvalue = 0, $p \leq (n-1)$.
+	\item calculate $n \times p$ map matrix $X_p = V_p (\Lambda_p)^{1/2}$ with $V = (v_1, ..., v_p)$, $\Lambda_p = diag(\lambda_1, ..., \lambda_p)$ rows of $X_p$ contain vectors $x_i$ in p dimensional space, mutual distances are given my $\tilde{D}$
+\end{enumerate}
+
+\end{minipage}
+}
+}
+
+\textit{Scheme:}
+\begin{center}
+\includegraphics[width=0.9\linewidth]{pictures/reconstructingCSE.jpg}
+\end{center}
+
+
+\subsubsection*{Predicting Cluster Membership of New Data}
+
+\begin{center}
+\includegraphics[width=0.9\linewidth]{pictures/predictingClusterCSE.jpg}
+\end{center}
 
 \subsection*{Cut}
 Partitioning a graph $G(V,E)$ with nodes $V$ and edges $E$ into disjoint sets $A,B$ $\to$ removing edges connecting parts. Degree of dissimilarity is computed as total weight of removed edges: \\
@@ -488,7 +516,26 @@ $Ncut(A,B) = 2 - Nassoc(A,B)$ \\
 \subsection*{Computing Optimal Partition}
 
 \subsection*{Grouping algorithm}
+\shadowbox{
+\parbox{0.95\linewidth}{
+\begin{minipage}{0.75\linewidth}
+\begin{enumerate}
+\item Given image or image sequence, set up weighted graph $\mathbf{G} = (\mathbf{V},\mathbf{E})$, set weight on edge connecting two nodes to measure of similarity
+\item Solve $(\mathbf{D} - \mathbf{W})\mathbf{x}=\lambda \mathbf{D} \mathbf{x}$ for eigenvectors with smallest eigenvalues.
+\item use eigenvector with second smallest eigenvalue to bipartition graph by finding splitting point s.t. $Ncut$ is minimized.
+\item Decide if current partition should be subdivided by checking stability of cut, make sure $Ncut$ is below prespecified value.
+\item recursively repartition if necessary.
 
+\end{enumerate}
+\end{minipage}
+}
+}
+
+\subsubsection*{Computational complexity}
+\begin{itemize}
+	\item Solving eigenvalue problem for all eigenvectors takes $\mathcal{O}(n^3)$ operations
+	\item Graphs often only locally connected, only top few eigenvectors needed, precision requirements low $\to$ $\mathcal{O}(nm) + \mathcal{O}(m M(n))$ where $M(n)$ is the cost of matrix-vector computation $\mathbf{Ax}$ ($A= \mathbf{D}^{1/2}(\mathbf{D} - \mathbf{W})\mathbf{D}^{1/2}$).
+\end{itemize}
 \section*{Mean Field Approximation}
 \subsection*{Mean Field Theory}
 Approximate Gibbs distribution by neglecting correlations between stochastic variables $\to$ determine "`most similar"' factorized distribution.
@@ -507,6 +554,10 @@ $F(\beta) \leq F_0(\beta) + \langle E \rangle_0 - \langle E_0 \rangle_0 = KL(p_0
 	\item split cost function $\mathcal{R}$ into terms that contain the object $u$ and other terms. Term has a form like $\mathcal{R}(c) = f(u) + \mathcal{R}(c|u)$
 	\item take the expected value $\mathbb{E}_{\mathbf{Q}_{u \ to \alpha}}$
 \end{enumerate}
+\textbf{Pseudocode:}
+\begin{center}
+\includegraphics[width=0.8\linewidth]{pictures/meanfields_pseudocode.jpg}
+\end{center}
 \section*{Approximation set coding}
 \textit{Find robust, informative pattern (hypothesis $c\in \mathcal{C}$ hypothesis space) in data }
 \subsection*{Approximation sets}
