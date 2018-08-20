@@ -199,7 +199,7 @@ $I(X;Y)=\mathbb {E} _{p(y)}[D_{\mathrm {KL} }(p(X|Y=y)\|p(X))].$ \\
 \subsection*{Kullback-Leibler divergence}
 \begin{itemize}
 	\item quantifies coding cost describing data with probability distribution $q$ when true distribution is $p$.
-	\item KL divergence is positive semidefinite. $D_{\mathrm {KL} } \geq 0$
+	\item KL divergence is positive semidefinite. $D_{\mathrm {KL} } \geq 0$. Use Jensen's inequality to prove it. 
 \end{itemize}
 way of comparing two distributions: a "true" probability distribution $p(X)$, and an arbitrary probability distribution $q(X)$. \\
 or: "unnecessary surprise". \textbf{not} symmetric! \\
@@ -479,6 +479,10 @@ $\to$ no correlations between assignments of different objects.
 Then minimize the Kullback-Leibler divergence to obtain best factorial approximation. \\
 Mean field $h_{u \alpha}$ is the expected cost $\mathcal{R}(c)$ that object $u$ assigned to cluster $\alpha$ 
 
+\textit{Mean field upper bound: }
+$F(\beta) \leq F_0(\beta) + \langle E \rangle_0 - \langle E_0 \rangle_0 = KL(p_0||p)/\beta + F(\beta) = \sum_{\sigma}p_0(\sigma)E(\sigma) + \frac{1}{\beta} \sum_{\sigma} p_0(\sigma)log_{p_0}(\sigma)$
+
+
 \subsubsection*{Determine mean field}
 \begin{enumerate}
 	\item split cost function $\mathcal{R}$ into terms that contain the object $u$ and other terms. Term has a form like $\mathcal{R}(c) = f(u) + \mathcal{R}(c|u)$
@@ -616,11 +620,20 @@ where $|\{\tau_s\}|$ is the number of distinct clusterings on $\mathbf{X}^{(1)}$
 
 Then to evaluate the approximation capacity of the k-means cost function, we use deterministic annealing to compute the optimal centroids and costs $R(c, \mathbf{X}^{(i)})$ at different temperatures $T = \beta^{-1}$, allowing for $2K$ possible clusters to enable overfitting, and choose as stopping temperature the one with the highest mutual information, balancing informativeness and robustness.
 
+\section*{Exercise Sheets}
+\subsection*{Optimal $\beta$ for Expected Log-Posterior Agreement}
+
+We consider the Gibbs posterior over hypotheses:
+$p_{\beta}(c|X) = \frac{1}{Z(\beta, X)}exp(-\beta R(c,X))$.
+For two data sets X', X', the posterior agreement is defined as: 
+$\hat k_{\beta}(X',X'') = \sum_{c \in \mathcal{C}}p_{\beta}(c|X')p_{\beta}(c|X'')$
 \end{multicols*}
+
+We want to find $\beta^*$ for which the posterior agreement is maximal. Finding the right $\beta$ can be seen as a trade off between stability and informativeness of the distribution. 
+In a sense, the optimal $\beta$ is supposed to give us the most robust solution.
 
 
 \end{document}
-
 
 
 
