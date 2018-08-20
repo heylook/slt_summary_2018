@@ -320,7 +320,26 @@ where $l\hat{P}(i) =$ \# object $i$ exhibits value $j$ and $\hat{P}(i) $ = empir
 Density estimation is assumed to be Gaussian $g_a(y)$. \\
 $p(y| \nu) = \sum_{a \leq s} g_a(y) p(a|\nu)$ where $p(a|\nu)$ mixture coefficients, $s$ number of mixture components.\\
 \textit{Remark:} Often feature values are restricted to specific domains, mixture components $\to$ rectified.
+Complete data likelihood is given by: $p(x,M|\theta) = \prod_{i=1}^n \sum_{r=1}^k M_{ir}p_rp(x_i|r)$, where $M_{ir} \in \{0,1\}$ and $\sum_r M_{ir} = 1$
 
+Assuming that the observations $x_{ij}$ are taken from domain $I$, which is equipartitioned into $I_p$ for $p= 1..m$, we have $p(x_{ij} \in i_p|\alpha) =: G_{\alpha}(p)$.
+Thus:
+$p(x,M|\theta) = \prod_{i=1}^n \prod_{r=1}^k[p_r \prod_{p=1}^m {\sum_{\alpha = 1}^l p(\alpha | r)G_{\alpha }(p)}^{n_{ip}}]^{M_{ir}}$,
+where $n_{ip}$ counts how many observations $x_{ij}$ from object $i$ fell into bin $I_p$
+
+The connection to the Info Bottleneck idea is given by:\\
+$X$: decision to pick an object $i$ uniformly.\\
+$\hat X$: encoding of object i by cluster r. \\
+Y: Relative frequency of observing bin p.
+
+Seeing that $I(X,\hat X) = H(X\hat X)$ = $-\sum_{r=1} p_r log p_r$, i.e. $I(X,\hat X) = log k$ for $p_r = \frac{1}{k}$
+
+We also have $H(Y|\hat X) = - \sum_{i=1}^n \sum_{r=1}^k \sum_{p=1}^m M_{ir} \frac{n_{ip}}{n_i}\frac{1}{n} log \sum_{\alpha} p(\alpha|r)G_{\alpha}(p)$
+
+Putting it all together we get that $I(X,\hat X) - \lambda I(\hat X, Y) = - \sum_r (\frac{1}{n}\sum_i M_{ir}) log p_r - \lambda \sum_{i,r} \frac{1}{n} M_{ir} \sum_p \frac{n_{ip}}{n_i}log \sum_{\alpha} p(\alpha|r)G_{\alpha}(p) - \lambda H(Y)
+= - \frac{1}{n} \sum_{i,r} M_{ir}[log p_r + \frac{\lambda}{n_i} \sum_p n_{ip} log \sum_{\alpha} p(\alpha|r)G_{\alpha}(p)] - \lambda H(Y)$
+
+By choosing the right constants and then dropping stuff that doesn't affect the minimum. That this is equal to the negative log likelihood. 
 
 \subsection*{Markov Chain Monte Carlo (MCMC)}
 \textit{Idea:} sampling from a probability distribution by constructing a Markov chain that has the desired distribution as its equilibrium distribution. 
@@ -627,13 +646,14 @@ We consider the Gibbs posterior over hypotheses:
 $p_{\beta}(c|X) = \frac{1}{Z(\beta, X)}exp(-\beta R(c,X))$.
 For two data sets X', X', the posterior agreement is defined as: 
 $\hat k_{\beta}(X',X'') = \sum_{c \in \mathcal{C}}p_{\beta}(c|X')p_{\beta}(c|X'')$
-\end{multicols*}
-
 We want to find $\beta^*$ for which the posterior agreement is maximal. Finding the right $\beta$ can be seen as a trade off between stability and informativeness of the distribution. 
 In a sense, the optimal $\beta$ is supposed to give us the most robust solution.
+\end{multicols*}
+
 
 
 \end{document}
+
 
 
 
