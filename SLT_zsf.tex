@@ -381,6 +381,7 @@ For Gibbs sampling in the Ising model we use the transition probability to a new
 	\item cost function $\mathcal{H}: \Omega \to \mathbb{R}, \omega \in \Omega$ denotes admissible solution.
 	\item solutions accepted/rejected according to Metropolis algorithm: decreased cost $\to$ accepted, increased cost $\to$ accepted with probability $exp(- \Delta \mathcal{H}/T)$ where $\Delta \mathcal{H} = \mathcal{H}(\omega_{new}) - \mathcal{H}(\omega_{old}) $. $T$ is the computational temperature.
 	\item reduce gradually the temperature during search proces $\to$ force system into solution with low costs. $\to$ random walk in solution space.
+
 \end{itemize}
 Markov process with converges to equilibrium: \\
 $\mathbf{P^{Gb}(\omega)} = \text{exp}(-(\mathcal{H}(\omega) - \mathcal{F}(\mathcal{H}))/T )$ \\
@@ -523,6 +524,73 @@ The optimal k can then be chosen as: $k^* = min[k|gap_n(k) \geq gap_n(k+1) - \si
 \end{enumerate}
 
 Choose classifier that matches chosen clustering model. 
+
+\section*{Coding Exercises}
+
+\subsection*{Histogram Clustering}
+MAP updates:
+$\hat{P}(y|c) = \sum_{x \in \hat{c}}{\frac{n(x)}{\sum_{x' \in c}n(x')}\hat{P}(y|x)} $  (1)
+
+$\hat{c}(x) = argmin_{a}\{-\sum_{y\in Y}{\hat{P}(y|x)log\hat{P}(y|a)}\}$  
+
+For DA clustering (1) becomes:
+$\hat{P}(y|c)=\sum_{x \in X}\hat{P}(x|c) \hat{P}(y|x)$
+with
+$\hat{P}(c) = \sum_{x \in X}\hat{P}(c|x)\hat{P}(x)$
+
+$\hat{P}(x|c) = \frac{\hat{P}(c|x)\hat{P}(x)}{\sum_{x \in X}\hat{P}(c|x)\hat{P}(x)}$
+
+and, with
+
+$\hat{P}(c|x) = \frac{exp(-D_{KL}[\hat{P}(.|x)||\hat{P}(.|a)]/T)}{\sum_{b=1}^{K}exp(-D_{KL}[\hat{P}(.|x)||\hat{P}(.|a)]/T)}$ 
+
+replacing equation (6)
+
+\subsection*{DA for pairwise clustering}
+Given a dataset of size $N$ and an $N \times N$ dissimilarity matrix $\mathbf{D} = (\mathcal{D}_{ik})$, the problem of pairwise clustering tries to cluster the data into $K$ clusters, represented by an $N \times K$ assignment matrix $\mathbf{M} = (M_{i\nu}) \in \{0,1\}^{N\times K}$ that minimizes the cost function
+$$\mathcal{H}^{pc}(\mathbf{M}) = \frac{1}{2} \sum_{i,k=1}^N \frac{\mathcal{D}_{ik}}{N} \left(\sum_{\nu=1}^K \frac{M_{i\nu} M_{k\nu}}{p_\nu} - 1\right)$$
+where $p_\nu = \frac{1}{N} \sum_{i=1}^N M_{i\nu}$ is the weight of cluster $\nu$. Algorithm II approximates the Gibbs distribution given by $\mathcal{H}^{pc}$ with the Gibbs distribution given by the factorial cost function $\mathcal{H}^{0}(\mathbf{M}, \mathcal{E}) = \sum_{i=1}^N \sum_{\nu=1}^K M_{i\nu} \mathcal{E}_{i\nu}$, parameterized by external mean fields $\mathcal{E} = (\mathcal{E}_{i\nu})$. Minimizing the Kullback-Leibler divergence $D^{KL}(\mathbf{P}^{Gb}(\mathcal{H}^0)\|\mathbf{P}^{Gb}(\mathcal{H}^{pc})$, where $\mathbf{P}^{Gb}(\mathcal{H})$ is the Gibbs distribution for the cost function $\mathcal{H}(\mathbf{M})$ gives the optimal $\mathcal{E}$ as 
+$$\mathcal{E}^*_{i\nu} = \left\langle \frac{1}{1+\sum_{j \neq i} M_{j\nu}} \left[ \frac{1}{2} \mathcal{D}_{ii} + \sum_{k \neq i} M_{k\nu} \left( \mathcal{D}_{ik} - \frac{1}{2} \frac{\sum_{j \neq i} M_{j\nu} \mathcal{D}_{jk}}{\sum_{j \neq i} M_{j\nu}} \right) \right] \right\rangle,$$
+where $\left\langle\cdot\right\rangle$ corresponds to taking expectations with respect to $\mathbf{P}^{Gb}(\mathcal{H}^0(\mathbf{M}))$. In the limit of large N, this optimum can be approximated as
+$$\mathcal{E}^*_{i\nu} = \frac{1}{1+\sum_{j \neq i} \left\langle M_{j\nu} \right\rangle} \left[ \frac{1}{2} \mathcal{D}_{ii} + \sum_{k \neq i} \left\langle M_{k\nu} \right\rangle \left( \mathcal{D}_{ik} - \frac{1}{2} \frac{\sum_{j \neq i} \left\langle M_{j\nu} \right\rangle \mathcal{D}_{jk}}{\sum_{j \neq i} \left\langle M_{j\nu} \right\rangle} \right) \right].$$
+The expectations $\left\langle M_{j\alpha} \right\rangle$ under the Gibbs distribution $\mathbf{P}^{Gb}(\mathcal{H}^0(\mathbf{M}))$ with temperature $T$ are then given by
+$$\left\langle M_{j\alpha} \right\rangle = \frac{\exp(-\mathcal{E}^*_{i\alpha}/T)}{\sum_{\nu=1}^K \exp(-\mathcal{E}^*_{i\nu}/T)}$$
+Algorithm II then uses deterministic annealing to approximate the Gibbs distribution for varying temperatures, by starting at high temperature, iteratively applying the two above equations for $\left\langle M_{j\alpha} \right\rangle$ and $\mathcal{E}^*_{i\nu}$ in an EM scheme for fixed $T$, and decreasing $T$ exponentially until the final temperature is reached. 
+
+Algorithm III further constrains the variational distribution to be in the form of a Gibbs distribution for the k-means cost function $$\mathcal{H}^{cc}(\mathbf{M}) = \sum_{i=1}^N \sum_{\nu=1}^K M_{i\nu} \|\mathbf{x}_i-\mathbf{y}_\nu\|^2,$$ where $(\mathbf{x}_i)_{i=1}^N$ are embeddings of the data to be determined, and $(\mathbf{y}_\nu)_{\nu=1}^K$ are centroids calculated from $(\mathbf{x}_i)_{i=1}^N$; in this case the mean fields are constrained to take the form $\mathcal{E}_{i\nu} = \|\mathbf{x}_i - \mathbf{y}_\nu\|^2$. Minimizing the KL-divergence $D^{KL}(\mathbf{P}^{Gb}(\mathcal{H}^{cc})\|\mathbf{P}^{Gb}(\mathcal{H}^{pc}))$ with respect to $(\mathbf{x}_i)_{i=1}^N$ and $(\mathbf{y}_\nu)_{\nu=1}^K$ now gives
+$$\mathbf{K}_i \mathbf{x}_i \approx \frac{1}{2} \sum_{\nu=1}^K \left\langle M_{i\nu} \right\rangle \left(\|\mathbf{y}_\nu\|^2 - \mathcal{E}^*_{i\nu}\right)\left(\mathbf{y}_\nu - \left\langle \mathbf{y} \right\rangle_i \right)$$
+where $\left\langle \mathbf{y} \right\rangle_i = \sum_{\nu=1}^K \left\langle M_{i\nu} \right\rangle \mathbf{y}_\nu$ is the mean of $\mathbf{y}$ under the conditional distribution $p(\nu|i) = \left\langle M_{i\nu} \right\rangle$ and $\mathbf{K}_i = \left\langle \mathbf{y} \mathbf{y}^\top \right\rangle_i - \left\langle \mathbf{y} \right\rangle_i \left\langle \mathbf{y} \right\rangle_i^\top$ the corresponding covariance matrix, and $\mathcal{E}^*_{i\nu}$ is as calculated in Algorithm II.  Algorithm III again uses deterministic annealing, calculating $\left\langle M_{i\nu} \right\rangle^{(t+1)}$ in the E-step from the mean fields $\mathcal{E}^{(t)}_{i\nu} = \|\mathbf{x}^{(t)}_i - \mathbf{y}^{(t)}_\nu\|^2$, and in the M-step updating $\mathbf{x}^{(t+1)}_i$ and $\mathbf{y}^{(t+1)}_\nu$ iteratively from fixed $\left\langle M_{i\nu} \right\rangle^{(t+1)}$ until the variables converge.
+
+\subsection*{MFA for Image Denoising in Ising Model}
+### Mean field approximation for Image Denoising
+In the image denoising setting, we are looking for an image $\sigma$ to minimize:
+    $$E(\sigma) = -\lambda \sum_{i=1}^N h_i\sigma - \sum_{i,j = 1}^N J_{i,j} \sigma_i \sigma_j$$
+where $h_i$ is the value of pixel $i$ in the noisy observation.
+    
+ We thus seek to minimize $KL(p_0 || p) + F(\beta)$, which is equivalent to minimizing the Gibbs free energy $G(p)$, where $F(\beta)$ is the free energy, $p_0$ the proposal distribution and $p$ the true distribution.
+ 
+ It can be shown that:
+ $$G(p) = -\lambda \sum_{i=1}^N m_i h_i - \sum_{i=1}^{N-1} \sum_{j=i+1}^N m_i J_{ij} m_j$$ \\ $$+ 1/\beta \sum_{i=1}^N (\frac{1 + m_i}{2}log \frac{1 + m_i}{2} + \frac{1 - m_i}{2}log\frac{1 - m_i}{2})$$
+
+where $m_i$ is the mean field for pixel $i$.
+Deriving the stationary equations, we find that $G(p)$ is minimized by:
+ 
+ $$m_k = tanh(\beta(\sum_{i\neq k} J_{ki} m_i + \lambda h_k)), k \in {1,N}$$
+ 
+ Which we can solve by iteratively updating the $m_k$.
+ 
+ \subsection*{Model Validation}
+ //Some of this stuff is in lecture notes so we might want to cut it.
+ In order to compare the stability of cost functions $R(c, \mathbf{X}) \in \mathcal{R}$ under noise in the data $\mathbf{X} \sim \mathbb{P}(\mathbf{X})$, approximation set coding considers a communication scenario including a sender, a problem generator and a receiver. Each entity is initially given access to a sample $\mathbf{X^{(1)}} \sim \mathbb{P}(\mathbf{X})$ and an optimal solution $c^\bot(\mathbf{X^{(1)}}) \in \arg \max_{c\in\mathcal{C}} R(c, \mathbf{X^{(1)}})$. The sender then chooses a transformation $\tau_s \in \mathbb{T}$, $|\mathbb{T}| = 2^{n\rho}$ which acts on the solution space (by permuting elements of the dataset in the case of clustering) and sends it to the problem generator, which generates another sample $\mathbf{X^{(2)}} \sim \mathbb{P}(\mathbf{X})$ and sends $\tau_s \circ \mathbf{X}^{(2)}$ to the receiver. The receiver then estimates $\tau_s$ by maximizing the posterior agreement between $\mathbb{P}(c|\beta, \mathbf{X}^{(1)}) \propto \exp(-\beta R(c,\mathbf{X}^{(1)}))$ and $\mathbb{P}(c|\beta, \tau \circ \mathbf{X}^{(2)}) \propto \exp(-\beta R(c,\tau \circ \mathbf{X}^{(2)}))$, returning $\hat\tau \in \arg \max_{\tau \sum \mathbb{T}} \sum_{c\in\mathcal{C}} \exp(-\beta(R(c,\mathbf{X}^{(1)} + R(c,\tau \circ \mathbf{X}^{(2)}))$. Here $\beta$ represents the degree to which the data is trusted; the larger the noise in the data, the lower $\beta$ has to be chosen to prevent decoding errors. The decoding error $\mathbb{P}(\hat\tau \neq \tau_s|\tau_s)$ can be shown to vanish asymptotically if the rate of transmission $\rho$ falls below the mutual information $$\mathcal{I}_\beta(\tau_s,\hat\tau) = \frac{1}{n} \log \frac{|\{\tau_s\}|\mathcal{Z}_{12}}{\mathcal{Z}_1 \mathcal{Z}_2},$$
+where $\mathcal{Z}_1 = \sum_{c\in\mathcal{C}} \exp(-\beta R(c,\mathbf{X^{(1)}}))$, $\mathcal{Z}_2 = \sum_{c\in\mathcal{C}} \exp(-\beta R(c,\mathbf{X^{(2)}}))$, $\mathcal{Z}_{12} = \sum_{c\in\mathcal{C}} \exp(-\beta (R(c,\mathbf{X^{(1)}})+R(c,\mathbf{X^{(2)}})))$ and $|\{\tau_s\}|$ is the number of possible realizations of $c^\bot(\tau_s \circ \mathbf{X}^{(2)})$. 
+
+The approximation capacity is then defined as the maximum of $\mathcal{I}_\beta$ over all inverse temperatures $\beta$. Then to apply model selection on $\mathcal{R}$, we split a given dataset $\mathbf{X}$ randomly into two datasets $\mathbf{X}^{(1)}$ and $\mathbf{X}^{(2)}$, compute the mutual information $\mathcal{I}_\beta$ for each $R \in \mathcal{R}$, maximize it with respect to $\beta$, and choose the cost function with the largest approximation capacity.
+
+For k-means clustering, we have $R(c, \mathbf{X}; \mathbf{Y}) = \sum_{i=1}^n \epsilon_{i,c(i)}$ where $\epsilon_{ik} = \epsilon_{ik}(\mathbf{X}, \mathbf{Y}) = \|x_i - y_k\|^2$ and $\mathbf{Y}$ are the cluster centroids inferred by maximizing the entropy of $\mathbb{P}(c|\beta, \mathbf{X})$. For $\epsilon^{(i)}_{ik} = \epsilon_{ik}(\mathbf{X}^{(i)}, \mathbf{Y})$ the mutual information is calculated as
+$$\mathcal{I}_\beta = \frac{1}{n} \log |\{\tau_s\}| + \frac{1}{n} \sum_{i=1}^n \log \frac{\sum_{k=1}^K e^{-\beta(\epsilon^{(1)}_{ik}+\epsilon^{(2)}_{ik})}}{\sum_{k=1}^K e^{-\beta\epsilon^{(1)}_{ik}} \sum_{k=1}^K e^{-\beta\epsilon^{(2)}_{ik}}}$$
+where $|\{\tau_s\}|$ is the number of distinct clusterings on $\mathbf{X}^{(1)}$. 
+
+Then to evaluate the approximation capacity of the k-means cost function, we use deterministic annealing to compute the optimal centroids and costs $R(c, \mathbf{X}^{(i)})$ at different temperatures $T = \beta^{-1}$, allowing for $2K$ possible clusters to enable overfitting, and choose as stopping temperature the one with the highest mutual information, balancing informativeness and robustness.
 
 \end{multicols*}
 
