@@ -373,14 +373,17 @@ For Gibbs sampling in the Ising model we use the transition probability to a new
  simulated annealing is often used to reduce the "random walk" behavior in the early part of the sampling process
 
 \subsubsection*{Heat-Bath Algorithm}
+Same as metropolis but with acceptance probability:
+$$p(\sigma_{new}) = exp(-\beta E(\sigma_{new})) / ( exp(-\beta E(\sigma_{new}) + exp(-\beta E(\sigma_{old})))$$
 
-\subsection*{Simulated Annealing}
+\subsubsection*{Simulated Annealing}
 \subsubsection*{Idea}
 \begin{itemize}
 	\item Markov process samples solution from solution space $\Omega$
 	\item cost function $\mathcal{H}: \Omega \to \mathbb{R}, \omega \in \Omega$ denotes admissible solution.
 	\item solutions accepted/rejected according to Metropolis algorithm: decreased cost $\to$ accepted, increased cost $\to$ accepted with probability $exp(- \Delta \mathcal{H}/T)$ where $\Delta \mathcal{H} = \mathcal{H}(\omega_{new}) - \mathcal{H}(\omega_{old}) $. $T$ is the computational temperature.
 	\item reduce gradually the temperature during search proces $\to$ force system into solution with low costs. $\to$ random walk in solution space.
+	\item annealing schedule, i.e. the $\beta$s, could be linear, quadratic of logarithmic for instance.
 
 \end{itemize}
 Markov process with converges to equilibrium: \\
@@ -391,6 +394,9 @@ where $\mathcal{F}(\mathcal{H})) = -T log \sum_{\omega' \in \Omega} \text{exp}(-
 	\item Temperature formally $\approx$ Lagrange parameter $\to$ constraint on expected costs. $\braket{H} = \sum_{\omega \in \Omega} P^{Gb}(\omega)  \mathcal{H}(\omega)$
 	\item Gibbs free energy related to expected cost via entropy $\mathcal{S}(P^{Gb}) = -\sum_{\omega \in \Omega} P^{Gb}(\omega)  \text{log} (P^{Gb}(\omega) ) = \frac 1 T \braket{H} - \frac 1 T \mathcal{F}(\mathcal{H})$
 \end{itemize}
+
+\subsubsection*{Parallel Tempering}
+Two Monte Carlo simulation were to run in parallel, one at high and one at a low temperature. At certain steps we swap the configurations of the two runs. This way both runs have access to low and high temperature configuration improving convergence to a global optimum. We swap the configurations after each epoch.
 \subsection*{Deterministic Annealing}
 \subsubsection*{Idea}
 deterministic variant of \textit{Simulated annealing}.
@@ -526,7 +532,25 @@ The optimal k can then be chosen as: $k^* = min[k|gap_n(k) \geq gap_n(k+1) - \si
 Choose classifier that matches chosen clustering model. 
 
 \section*{Coding Exercises}
+\subsection*{Deterministic Annealing Clustering}
+Deterministic Annealing Clustering is an approach to the unsupervised learning problem of clustering. At its core the algorithm is about minimizing the Lagrangian: $$F = D - TH$$
+, where $D$ is a measure of the distortion, the "distance" of the datapoints from their respective cluster centers, $H$ is the Shannon Entropy of the system and $T$ is the temperature. The algorithm is grounded in both information theory and statistical physics. The core idea is that, at an initially high temperature the entropy is maximized. Then as we gradually lower the temperature $T$, the distortion is minimized. 
 
+The *preferred implementation* of the algorithm is as follows:
+\begin{enumerate}
+    \item Initialize the number of codevectors, the minimal temperature, the initial temperature, the initial number of clusters, the initial cluster center and it's probabiltiy. 
+\item For i in [1,K] $$y_i = \frac{\sum_x x p(x)(y_i|x)}{p(y_i)}$$ 
+    where $$p(y_i|x) = \frac{p(y_i)e^{(x-y_i)^2/T}}{\sum_{j=1}^Kp(y_i)e^{(x-y_j)^2/T}}$$
+    and $$p(y_i) = \sum_xp(x)p(y_i|x)$$
+\item If not converged, repeat (2)
+\item If $T < T_{min}$, stop
+\item Cool down: T = $\alpha$ T, $\alpha$ < 1
+\item If $K < K_{max}$ check if any of the clusters has reached critical temperature. If so, add a new codevector $y{K+1} = y_j + \delta, p(y_{K+1} = p(y_j)/2, p(y_j) = p(y_j)/2$, where $j$ is the cluster that has reached critical temperature. Increase K by one. 
+\item Repeat from (3)
+\end{enumerate}
+
+
+The *critical temperature* is the temperature for which a given cluster splits into two. Assuming Euclidean distance as our measure of distortion, it can be explcitly computed as $$T_{c,y_i} = 2\lambda_{max}$$, where $\lambda_{max}$ is the largest eigenvalue of $C_{x|y_i}$, which in turn is the Covariance matrix of the posterior distribution of $p(x|y)$
 \subsection*{Histogram Clustering}
 MAP updates:
 $\hat{P}(y|c) = \sum_{x \in \hat{c}}{\frac{n(x)}{\sum_{x' \in c}n(x')}\hat{P}(y|x)} $  (1)
@@ -562,7 +586,7 @@ $$\mathbf{K}_i \mathbf{x}_i \approx \frac{1}{2} \sum_{\nu=1}^K \left\langle M_{i
 where $\left\langle \mathbf{y} \right\rangle_i = \sum_{\nu=1}^K \left\langle M_{i\nu} \right\rangle \mathbf{y}_\nu$ is the mean of $\mathbf{y}$ under the conditional distribution $p(\nu|i) = \left\langle M_{i\nu} \right\rangle$ and $\mathbf{K}_i = \left\langle \mathbf{y} \mathbf{y}^\top \right\rangle_i - \left\langle \mathbf{y} \right\rangle_i \left\langle \mathbf{y} \right\rangle_i^\top$ the corresponding covariance matrix, and $\mathcal{E}^*_{i\nu}$ is as calculated in Algorithm II.  Algorithm III again uses deterministic annealing, calculating $\left\langle M_{i\nu} \right\rangle^{(t+1)}$ in the E-step from the mean fields $\mathcal{E}^{(t)}_{i\nu} = \|\mathbf{x}^{(t)}_i - \mathbf{y}^{(t)}_\nu\|^2$, and in the M-step updating $\mathbf{x}^{(t+1)}_i$ and $\mathbf{y}^{(t+1)}_\nu$ iteratively from fixed $\left\langle M_{i\nu} \right\rangle^{(t+1)}$ until the variables converge.
 
 \subsection*{MFA for Image Denoising in Ising Model}
-### Mean field approximation for Image Denoising
+
 In the image denoising setting, we are looking for an image $\sigma$ to minimize:
     $$E(\sigma) = -\lambda \sum_{i=1}^N h_i\sigma - \sum_{i,j = 1}^N J_{i,j} \sigma_i \sigma_j$$
 where $h_i$ is the value of pixel $i$ in the noisy observation.
