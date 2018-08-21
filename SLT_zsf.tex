@@ -105,7 +105,7 @@
 %%Header
 \usepackage{fancyhdr}
 \pagestyle{fancy}
-\rhead{Christoph Zuidema 13-913-314 czuidema@student.ethz.ch}
+\rhead{Lorenz Kuhn}
 \lhead{Page \thepage}
 \chead{Statistical Learning Theory - Summary}
 
@@ -163,7 +163,9 @@ $\frac{\partial}{\partial \mathbf{x}}(\|\mathbf{Ax - b}\|_2^2) = \mathbf{2(A^\to
 $\frac{\partial}{\partial x}\frac{g(x)}{h(x)} = \frac{g'(x)h(x) - g(x)h'(x)}{h(x)^2}$\\
 $\frac{\partial}{\partial(w_i^Tx)}softmax(j)= softmax(j)(\delta_{ij} - softmax(i))$
 
-For functionals, we have the Taylor approximation of: $F[x + \epsilon \eta] = F[X] + \epsilon \int \frac{\partial F}{\partial x}(z) \eta (z) dz + O(\epsilon ^2)$
+For functionals, we have the Taylor approximation of: $F[x + \epsilon \eta] = F[X] + \epsilon \int \frac{\partial F}{\partial x}(z) \eta (z) dz + O(\epsilon ^2)$ \\
+$cosh' = sinh$
+$sinh' = cosh$
 
 \subsection*{Maximization Basics}
 \subsubsection*{Calculus of Variations}
@@ -186,6 +188,41 @@ functional derivative (Euler Lagrange): $\frac{\delta J}{\delta f(x)} = \frac{\p
 	$\theta := argmax_{\theta} \sum_i \sum_{z^{(i)}} Q_i(z^{(i)})log\frac{p(x^{(i)},z^{(i)};\theta)}{Q_i(z^{(i)})}$ 
 	\item check if converged.
 \end{enumerate}
+
+\subsection*{Gaussian Mixture Models (GMM)}
+For GMM let $\boldsymbol{\theta}_k = (\boldsymbol{\mu}_k, \boldsymbol{\Sigma}_k)$; $p_{\theta_k}(\mathbf{x}) = \mathcal{N}(\mathbf{x} | \boldsymbol{\mu}_k, \Sigma_k)$\\
+\textbf{Mixture Models:} $p_\theta(\mathbf{x}) = \sum_{k=1}^K \pi_k p_{\theta_k}(\mathbf{x})$\\
+\textbf{Assignment variable (generative model):} $z_{ij} \in \{0, 1\}$, $\sum_{j=1}^k z_{ij} = 1$\\
+$\operatorname{Pr}(z_k = 1) = \pi_k \Leftrightarrow p(\mathbf{z}) = \prod_{k=1}^K \pi_k^{z_k}$\\
+\textbf{Complete data distribution:}\\
+$p_\theta(\mathbf{x}, \mathbf{z}) = \prod_{k=1}^K \left( \boldsymbol{\pi}_k p_{\theta_k}(\mathbf{x})\right)^{z_k}$\\
+\textbf{Posterior Probabilities:} $\\\operatorname{Pr}(z_k = 1 | \mathbf{x}) = \frac{\operatorname{Pr}(z_k = 1) p(\mathbf{x} | z_k = 1)}{\sum_{l=1}^K \operatorname{Pr}(z_l = 1) p(\mathbf{x} | z_l = 1)} = \frac{\boldsymbol{\pi}_k p_{\theta_k}(\mathbf{x})}{\sum_{l=1}^K \boldsymbol{\pi}_l p_{\theta_l}(\mathbf{x})}$
+\textbf{Likelihood of observed data $\mathbf{X}$:}\\
+$p_\theta(\mathbf{X}) = \prod_{n=1}^N p_\theta(\mathbf{x}_n) = \prod_{n=1}^N \left(\sum_{k=1}^K \pi_k p_{\theta_k}(\mathbf{x}_n)\right)$
+\textbf{Max. Likelihood Estimation (MLE):}\\
+$\argmax_\theta\sum_{n=1}^N \log \left( \sum_{k=1}^K \pi_k p_{\theta_k}(\mathbf{x}_n)\right)\\
+\ge \sum_{n=1}^N \sum_{k=1}^K{q_k[\log p_{\theta_k}(\mathbf{x}_n) + \log \pi_k - \log q_k]}$\\
+with $\sum_{k=1}^K{q_k} = 1$ by Jensen Inequality.
+
+\subsection*{Generative Model}
+1. sample cluster index $j \sim Categorical(\pi)$\\
+2. given $j$, sample data $x \sim \text{Normal}(\mu_j, \Sigma_j)$
+
+
+\subsection*{Expectation-Maximization (EM) for GMM}
+\textbf{E-Step: }\\
+Pr$[z_{k,n} = 1 | \mathbf{x}_n] = q_{k, n} = \frac{\boldsymbol{\pi}_k^{(t-1)} \mathcal{N}(\mathbf{x}_n | \boldsymbol{\mu}_k^{(t-1)}, \boldsymbol{\Sigma}_k^{(t-1)})}{\sum_{j=1}^K \boldsymbol{\pi}_j^{(t-1)} \mathcal{N}(\mathbf{x}_n | \boldsymbol{\mu}_j^{(t-1)}, \boldsymbol{\Sigma}_j^{(t-1)})}$\\
+\textbf{M-Step: } $\boldsymbol{\mu}_k^{(t)} := \frac{\sum_{n=1}^N q_{k,n} \mathbf{x}_n}{\sum_{n=1}^N q_{k,n}}$
+$, \boldsymbol{\pi}_k^{(t)} := \frac{1}{N} \sum_{n=1}^N q_{k,n}$\\
+$\Sigma_k^{(t)} = \frac{\sum_{n=1}^N q_{k, n} (\mathbf{x}_n - \boldsymbol{\mu}_k^{(t)})(\mathbf{x}_n - \boldsymbol{\mu}_k^{(t)})^\top}{\sum_{n=1}^N q_{k,n}}$
+
+\subsection*{Gaussian distribution}
+Std. deviation $\sigma$, mean $\mu$: 
+$f(x) = \frac{1}{\sqrt{2\pi \sigma^2}} e^{- \frac{1}{2} \frac{(x-\mu)^2}{\sigma^2}}$\\
+Cov. matrix $\Sigma$: 
+$f(x) = \frac{1}{(2\pi)^\frac{D}{2} \sqrt{|\Sigma|}} e^{- \frac{1}{2} (x-\mu)^T \Sigma^{-1} (x-\mu)}$
+
+
 
 \subsection*{Information Theory}
 \textit{Mutual information: } \\
@@ -311,11 +348,6 @@ Most agnostic $P(c|\mathcal{X},\mathcal{Y})$ is Gibbs distribution.  \\
 Distributional data encoded in dyads (pair $(x_i, y_i) \in \mathcal{X} \times \mathcal{Y} $): $n$ different objects $\{x_i\} \in \mathcal{X}$, $m$ possible feature values $\{y_i\} \in \mathcal{Y}$. Data is set of $l$ observations $\mathcal{Z} = \{ (x_{i(r)}, y_{j(r)})\}_{r=1}^{l}$. \\
 Likelihood of data $\mathcal{Z}$ $\mathcal{L}(\mathcal{Z}) = \Pi_{i \leq n} \Pi_{j \leq m} P((i,j)|c(i),Q)^{l\hat{P}(i)}$ \\
 where $l\hat{P}(i) =$ \# object $i$ exhibits value $j$ and $\hat{P}(i) $ = empirical probability finding object $i$ with feature value $j$.
-
-\subsubsection*{Procedure}
-\begin{enumerate}
-	\item 
-\end{enumerate}
 
 \subsection*{Parametric distributional clustering}
 Density estimation is assumed to be Gaussian $g_a(y)$. \\
@@ -581,20 +613,7 @@ $\beta \to 0$: every hypothesis good solution $\to$ not informative. \\
 $\beta \to \infty$: each set has only one element $\to$ not robust. \\
 $ \Rightarrow \, \beta$ controls tradeoff between informativeness and robustness/how much posterior distributions agree for different values of $\beta$.
 
-\subsection*{Communication scenario}
-\textit{partition hypothesis space $\mathcal{C}$ with distinguishable approximation sets and use them as symbols for communication}
-\subsubsection*{Codebook generation}
-\textit{Problem:} usually only one set of observations available. $\to$ use set of transformation $\mathbb{T}$: \\
-$\forall t \in \mathbb{T}, \forall c \in \mathcal{C}, \forall{\beta} \in \mathbb{R}_{+} w_{\beta}(t \circ c, t \circ X) = w_{\beta}(c,X)$ \\
-\textbf{Codebook construction: Script p.g 43}
 
-
-\subsubsection*{Communication Protocol}
-
-\vspace{5cm}
-\begin{itemize}
-	\item chain rule for information
-\end{itemize}
 \section*{Model Selection}
 \textit{Minimum Description Length: } $-log p (x|\theta_k) - log p(\theta_k)$ \\
 
@@ -695,6 +714,8 @@ $$\mathcal{I}_\beta = \frac{1}{n} \log |\{\tau_s\}| + \frac{1}{n} \sum_{i=1}^n \
 where $|\{\tau_s\}|$ is the number of distinct clusterings on $\mathbf{X}^{(1)}$. 
 
 Then to evaluate the approximation capacity of the k-means cost function, we use deterministic annealing to compute the optimal centroids and costs $R(c, \mathbf{X}^{(i)})$ at different temperatures $T = \beta^{-1}$, allowing for $2K$ possible clusters to enable overfitting, and choose as stopping temperature the one with the highest mutual information, balancing informativeness and robustness.
+
+Examples of transformations: permutations in graph based clustering, translation for mean estimation, rotation for SVD, scalling for linear regression, permutation and scaling for sparse linear regression. 
 
 \section*{Exercise Sheets}
 \subsection*{Optimal $\beta$ for Expected Log-Posterior Agreement}
