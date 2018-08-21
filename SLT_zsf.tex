@@ -105,7 +105,7 @@
 %%Header
 \usepackage{fancyhdr}
 \pagestyle{fancy}
-\rhead{Christoph Zuidema 13-913-314 czuidema@student.ethz.ch}
+\rhead{Prof. Dr. Lorenz Kuhn \& Christoph Zuidema}
 \lhead{Page \thepage}
 \chead{Statistical Learning Theory - Summary}
 
@@ -143,6 +143,10 @@ $\text{Posterior probability} \propto \text{Likelihood} \times \text{Prior proba
 \textit{Bound on disjunction: }$\max{\mathbb{P}(A_1), \dots , \mathbb{P}(A_n)} \leq \mathbb{P}(E) \leq \min{1, \mathbb{P}(A_1) + \dots + \mathbb{P}(A_n)}$
 
 \textit{Glivenko-Catelli theorem: }$\mathbb{P}(\sup_{x} | F_{n}(x) - F(x)| \to 0)=1$ if $n \to 0$.
+
+\textit{Completing the square: }
+If we want to go from $ax^2 + bx + c = 0$ to $a(x+d)^2 + e = 0$, 
+we get $d$ by $d = \frac{b}{2a}$ and $e = c - \frac{b^2}{4a}$
 \subsection*{Derivatives}
 $\frac{\partial}{\partial \mathbf{x}}(\mathbf{b}^\top \mathbf{x}) = \frac{\partial}{\partial \mathbf{x}}(\mathbf{x}^\top \mathbf{b}) = \mathbf{b}$ \quad
 $\frac{\partial}{\partial \mathbf{x}}(\mathbf{x}^\top \mathbf{x}) = 2\mathbf{x}$\\
@@ -159,7 +163,14 @@ $\frac{\partial}{\partial \mathbf{x}}(\|\mathbf{Ax - b}\|_2^2) = \mathbf{2(A^\to
 $\frac{\partial}{\partial x}\frac{g(x)}{h(x)} = \frac{g'(x)h(x) - g(x)h'(x)}{h(x)^2}$\\
 $\frac{\partial}{\partial(w_i^Tx)}softmax(j)= softmax(j)(\delta_{ij} - softmax(i))$
 
+For functionals, we have the Taylor approximation of: $F[x + \epsilon \eta] = F[X] + \epsilon \int \frac{\partial F}{\partial x}(z) \eta (z) dz + O(\epsilon ^2)$ \\
+$cosh' = sinh$
+$sinh' = cosh$
+
 \subsection*{Maximization Basics}
+\subsubsection*{Lagrange multipliers}
+$ {\mathcal {L}}(x,y,\lambda )=f(x,y)-\lambda \cdot g(x,y)$ \\
+solve $\nabla _{x,y,\lambda }{\mathcal {L}}(x,y,\lambda )=0$
 \subsubsection*{Calculus of Variations}
 Goal: find the maximum of a functional. \\
 $J(x + \delta x) - J(x) = 0$ \\
@@ -170,6 +181,7 @@ change $\delta J = \int_a^b  \frac{\delta J}{\delta f(x)} \delta f(x) dx $ \\
 functional derivative: $\frac{\delta J}{\delta f(x)} = \frac{\partial L}{\partial f} -\frac{d}{dx} \frac{\partial L}{\partial f'} $\\
 \textit{complete data likelihood:} $p(x,k|\mu, \eta)$\\
 \textit{incomplete data likelihood:} $p(x|\mu, \eta)$
+
 \subsubsection*{EM-Algorithm}
 \textit{given}: $p(\mathbf{X},\mathbf{Z}|\mathbf{\theta})$ with observed variables $\mathbf{X}$ and latent variables $\mathbf{Z}$, parameters $\mathbf{\theta}$
 \textit{goal:} maximize likelihood function $p(\mathbf{X}|\mathbf{\theta})$ wrt. $\mathbf{\theta}$.
@@ -181,6 +193,41 @@ functional derivative: $\frac{\delta J}{\delta f(x)} = \frac{\partial L}{\partia
 	$\theta := argmax_{\theta} \sum_i \sum_{z^{(i)}} Q_i(z^{(i)})log\frac{p(x^{(i)},z^{(i)};\theta)}{Q_i(z^{(i)})}$ 
 	\item check if converged.
 \end{enumerate}
+
+\subsection*{Gaussian Mixture Models (GMM)}
+For GMM let $\boldsymbol{\theta}_k = (\boldsymbol{\mu}_k, \boldsymbol{\Sigma}_k)$; $p_{\theta_k}(\mathbf{x}) = \mathcal{N}(\mathbf{x} | \boldsymbol{\mu}_k, \Sigma_k)$\\
+\textbf{Mixture Models:} $p_\theta(\mathbf{x}) = \sum_{k=1}^K \pi_k p_{\theta_k}(\mathbf{x})$\\
+\textbf{Assignment variable (generative model):} $z_{ij} \in \{0, 1\}$, $\sum_{j=1}^k z_{ij} = 1$\\
+$\operatorname{Pr}(z_k = 1) = \pi_k \Leftrightarrow p(\mathbf{z}) = \prod_{k=1}^K \pi_k^{z_k}$\\
+\textbf{Complete data distribution:}\\
+$p_\theta(\mathbf{x}, \mathbf{z}) = \prod_{k=1}^K \left( \boldsymbol{\pi}_k p_{\theta_k}(\mathbf{x})\right)^{z_k}$\\
+\textbf{Posterior Probabilities:} $\\\operatorname{Pr}(z_k = 1 | \mathbf{x}) = \frac{\operatorname{Pr}(z_k = 1) p(\mathbf{x} | z_k = 1)}{\sum_{l=1}^K \operatorname{Pr}(z_l = 1) p(\mathbf{x} | z_l = 1)} = \frac{\boldsymbol{\pi}_k p_{\theta_k}(\mathbf{x})}{\sum_{l=1}^K \boldsymbol{\pi}_l p_{\theta_l}(\mathbf{x})}$
+\textbf{Likelihood of observed data $\mathbf{X}$:}\\
+$p_\theta(\mathbf{X}) = \prod_{n=1}^N p_\theta(\mathbf{x}_n) = \prod_{n=1}^N \left(\sum_{k=1}^K \pi_k p_{\theta_k}(\mathbf{x}_n)\right)$ \\
+\textbf{Max. Likelihood Estimation (MLE):}\\
+$\text{argmax}_{\theta}\sum_{n=1}^N \log \left( \sum_{k=1}^K \pi_k p_{\theta_k}(\mathbf{x}_n)\right)$ \\
+$\ge \sum_{n=1}^N \sum_{k=1}^K{q_k[\log p_{\theta_k}(\mathbf{x}_n) + \log \pi_k - \log q_k]}$\\
+with $\sum_{k=1}^K{q_k} = 1$ by Jensen Inequality.
+
+\subsection*{Generative Model}
+1. sample cluster index $j \sim Categorical(\pi)$\\
+2. given $j$, sample data $x \sim \text{Normal}(\mu_j, \Sigma_j)$
+
+
+\subsection*{Expectation-Maximization (EM) for GMM}
+\textbf{E-Step: }\\
+Pr$[z_{k,n} = 1 | \mathbf{x}_n] = q_{k, n} = \frac{\boldsymbol{\pi}_k^{(t-1)} \mathcal{N}(\mathbf{x}_n | \boldsymbol{\mu}_k^{(t-1)}, \boldsymbol{\Sigma}_k^{(t-1)})}{\sum_{j=1}^K \boldsymbol{\pi}_j^{(t-1)} \mathcal{N}(\mathbf{x}_n | \boldsymbol{\mu}_j^{(t-1)}, \boldsymbol{\Sigma}_j^{(t-1)})}$\\
+\textbf{M-Step: } $\boldsymbol{\mu}_k^{(t)} := \frac{\sum_{n=1}^N q_{k,n} \mathbf{x}_n}{\sum_{n=1}^N q_{k,n}}$
+$, \boldsymbol{\pi}_k^{(t)} := \frac{1}{N} \sum_{n=1}^N q_{k,n}$\\
+$\Sigma_k^{(t)} = \frac{\sum_{n=1}^N q_{k, n} (\mathbf{x}_n - \boldsymbol{\mu}_k^{(t)})(\mathbf{x}_n - \boldsymbol{\mu}_k^{(t)})^\top}{\sum_{n=1}^N q_{k,n}}$
+
+\subsection*{Gaussian distribution}
+Std. deviation $\sigma$, mean $\mu$: 
+$f(x) = \frac{1}{\sqrt{2\pi \sigma^2}} e^{- \frac{1}{2} \frac{(x-\mu)^2}{\sigma^2}}$\\
+Cov. matrix $\Sigma$: 
+$f(x) = \frac{1}{(2\pi)^\frac{D}{2} \sqrt{|\Sigma|}} e^{- \frac{1}{2} (x-\mu)^T \Sigma^{-1} (x-\mu)}$
+
+
 
 \subsection*{Information Theory}
 \textit{Mutual information: } \\
@@ -319,11 +366,6 @@ Distributional data encoded in dyads (pair $(x_i, y_i) \in \mathcal{X} \times \m
 Likelihood of data $\mathcal{Z}$ $\mathcal{L}(\mathcal{Z}) = \Pi_{i \leq n} \Pi_{j \leq m} P((i,j)|c(i),Q)^{l\hat{P}(i)}$ \\
 where $l\hat{P}(i) =$ \# object $i$ exhibits value $j$ and $\hat{P}(i) $ = empirical probability finding object $i$ with feature value $j$.
 
-\subsubsection*{Procedure}
-\begin{enumerate}
-	\item 
-\end{enumerate}
-
 \subsection*{Parametric distributional clustering}
 Density estimation is assumed to be Gaussian $g_a(y)$. \\
 $p(y| \nu) = \sum_{a \leq s} g_a(y) p(a|\nu)$ where $p(a|\nu)$ mixture coefficients, $s$ number of mixture components.\\
@@ -388,6 +430,14 @@ Initialization: Choose an arbitrary point $x_0$ as first sample, choose arbitrar
 	\item initial samples may follow a very different distribution. Solution: throw away first 1000 samples.
 	\item  for high dimensions: finding the right jumping distribution can be difficult, as the different individual dimensions behave in very different ways, and the jumping width must be "just right" for all dimensions at once to avoid excessively slow mixing $\to$ Gibbs Sampling.
 \end{itemize}
+\includegraphics[width=0.7\linewidth]{pictures/detailedBalance.jpg}
+
+\textit{Pseudocode:}
+
+\begin{center}
+\includegraphics[width=0.9\linewidth]{pictures/MCMC.jpg}
+
+\end{center}
 
 \subsubsection*{Gibbs Sampling}
 given a multivariate distribution it is simpler to sample from a conditional distribution than to marginalize by integrating over a joint distribution. \\
@@ -398,6 +448,11 @@ Applicable if:
 \end{itemize}
 For Gibbs sampling in the Ising model we use the transition probability to a new state where only $\sigma_i$ is flipped: $p_i(\sigma) = exp(-\beta max[0,\Delta E_i(\sigma)])$ 
  simulated annealing is often used to reduce the "random walk" behavior in the early part of the sampling process
+
+\begin{center}
+\includegraphics[width=0.9\linewidth]{pictures/gibbsSampler.jpg}
+
+\end{center}
 
 \subsubsection*{Heat-Bath Algorithm}
 Same as metropolis but with acceptance probability:
@@ -428,8 +483,14 @@ Two Monte Carlo simulation were to run in parallel, one at high and one at a low
 \subsubsection*{Idea}
 deterministic variant of \textit{Simulated annealing}.
 
+
 The critical temperature, at which a cluster will split is:
 $T_c = 2\lambda_{max}$ where $\lambda_{max}$ is the largest eigenvalue of $C_{x|y_0} = \sum_x p(x|y)(x-y)(x-y)^t$
+
+\begin{center}
+\includegraphics[width=0.9\linewidth]{pictures/deterministicAnnealing.jpg}
+
+\end{center}
 
 \subsection*{Information Bottleneck Method}
 \subsubsection*{Idea}
@@ -473,7 +534,7 @@ $ \Rightarrow $ embed given nonmetric proximity data problem in vector space wit
 	\item  $\tilde{D}_{ij} =  \tilde{S}_{ii} +   \tilde{S}_{jj} + \tilde{S}_{ij} $
 	\item Next steps only if you want embedding vectors
 	\item Get $\tilde{S}^c = \frac{1}{2}\tilde{D}^c$
-	\item Get eigendecomposition of $\tilde{S}^c = V\Lambda V^T$
+	\item Get eigendecomposition of $\tilde{S}^c = V\Lambda V^T$ where column $i$ of $V$ is the eigenvector $i$, and $\Lambda$ is the matrix with the corresponding eigenvalue on the diagonal.
 	\item The rows of $X_p = V_p (\Lambda_p)^{1/2}$ are the p-dimensional embedding vectors of the data. $V_p$ are the first $p$ eigenvectors.
 \end{enumerate}
 
@@ -588,27 +649,18 @@ $\beta \to 0$: every hypothesis good solution $\to$ not informative. \\
 $\beta \to \infty$: each set has only one element $\to$ not robust. \\
 $ \Rightarrow \, \beta$ controls tradeoff between informativeness and robustness/how much posterior distributions agree for different values of $\beta$.
 
-\subsection*{Communication scenario}
-\textit{partition hypothesis space $\mathcal{C}$ with distinguishable approximation sets and use them as symbols for communication}
-\subsubsection*{Codebook generation}
-\textit{Problem:} usually only one set of observations available. $\to$ use set of transformation $\mathbb{T}$: \\
-$\forall t \in \mathbb{T}, \forall c \in \mathcal{C}, \forall{\beta} \in \mathbb{R}_{+} w_{\beta}(t \circ c, t \circ X) = w_{\beta}(c,X)$ \\
-\textbf{Codebook construction: Script p.g 43}
 
-
-\subsubsection*{Communication Protocol}
-
-\vspace{5cm}
-\begin{itemize}
-	\item chain rule for information
-\end{itemize}
 \section*{Model Selection}
+neg. log-likelihood usually decreases with increasing model complexity. More
+parameters support a better fit!
+Correct this tendency to select complex models with a
+complexity penalty \\
 \textit{Minimum Description Length: } $-log p (x|\theta_k) - log p(\theta_k)$ \\
 
 \textit{Bayesian Information Criterion:} $-2 log (\hat p | \hat \theta_k, \mathcal{M}_k)  + k log n$, where $\mathcal{M}_k$ is one of the possible model classes. \\
 \textit{Gap Statistic:} $gap_n(k) := E_n^*[log(W_k)] - log(W_k)$, where $W_k = \sum_{\eta}\frac{1}{2n_{\eta}} \sum_{i,j \in \epsilon_{\eta \eta}} D_{ij}$ and $D_{ij} = ||x_i -x_j||^2$
 The optimal k can then be chosen as: $k^* = min[k|gap_n(k) \geq gap_n(k+1) - \sigma_{k+1}]$ \\
-
+MDL and BIC formally equivalent.
 \textit{Gap Statistic:}
 \begin{enumerate}
     \item Train a predictor $\phi_{Z'}$ on the data $Z' := (X', \alpha(X'))$
@@ -616,7 +668,24 @@ The optimal k can then be chosen as: $k^* = min[k|gap_n(k) \geq gap_n(k+1) - \si
     \item Compare clustering solutions $(\phi_{Z'}(X_i))_{i \in [n]}$ and $\alpha(X)$ on $X$
 \end{enumerate}
 
-Choose classifier that matches chosen clustering model. 
+Choose classifier that matches chosen clustering model. Fails if data too noisy. The gap statistic assumes
+compact or spherically
+distributed clusters.
+
+\textit{Stability:}\\
+Solutions on two data sets from the same
+source should be similar. \\
+Two Sample Scenario:\\
+General procedure\\
+1. Draw two data sets from the same source.
+2. Cluster both data sets.
+3. Compute disagreement\\
+(In-)Stability := expected (dis-)agreement of the solutions.
+Critics: \\
+The stability method does not take the complexity of a solution
+appropriately into account. The tradeoff between
+informativeness and stability of solutions should be
+quantitatively evaluated.
 
 \section*{Coding Exercises}
 \subsection*{Deterministic Annealing Clustering}
@@ -655,7 +724,11 @@ and, with
 
 $\hat{P}(c|x) = \frac{exp(-D_{KL}[\hat{P}(.|x)||\hat{P}(.|a)]/T)}{\sum_{b=1}^{K}exp(-D_{KL}[\hat{P}(.|x)||\hat{P}(.|a)]/T)}$ 
 
-replacing equation (6)
+replacing equation (6)\\
+\textit{Limitations histogram clustering:}
+\begin{center}
+\includegraphics[width=0.8\linewidth]{pictures/limitationsHC.jpg}
+\end{center}
 
 \subsection*{DA for pairwise clustering}
 Given a dataset of size $N$ and an $N \times N$ dissimilarity matrix $\mathbf{D} = (\mathcal{D}_{ik})$, the problem of pairwise clustering tries to cluster the data into $K$ clusters, represented by an $N \times K$ assignment matrix $\mathbf{M} = (M_{i\nu}) \in \{0,1\}^{N\times K}$ that minimizes the cost function
@@ -703,6 +776,8 @@ where $|\{\tau_s\}|$ is the number of distinct clusterings on $\mathbf{X}^{(1)}$
 
 Then to evaluate the approximation capacity of the k-means cost function, we use deterministic annealing to compute the optimal centroids and costs $R(c, \mathbf{X}^{(i)})$ at different temperatures $T = \beta^{-1}$, allowing for $2K$ possible clusters to enable overfitting, and choose as stopping temperature the one with the highest mutual information, balancing informativeness and robustness.
 
+Examples of transformations: permutations in graph based clustering, translation for mean estimation, rotation for SVD, scalling for linear regression, permutation and scaling for sparse linear regression. 
+
 \section*{Exercise Sheets}
 \subsection*{Optimal $\beta$ for Expected Log-Posterior Agreement}
 
@@ -712,11 +787,33 @@ For two data sets X', X', the posterior agreement is defined as:
 $\hat k_{\beta}(X',X'') = \sum_{c \in \mathcal{C}}p_{\beta}(c|X')p_{\beta}(c|X'')$
 We want to find $\beta^*$ for which the posterior agreement is maximal. Finding the right $\beta$ can be seen as a trade off between stability and informativeness of the distribution. 
 In a sense, the optimal $\beta$ is supposed to give us the most robust solution.
+
+\begin{center}
+\includegraphics[width=0.8\linewidth]{pictures/topologicalClustering1.jpg}
+\includegraphics[width=0.8\linewidth]{pictures/topologicalClustering2.jpg}
+\includegraphics[width=0.8\linewidth]{pictures/topologicalClustering3.jpg}
+\includegraphics[width=0.8\linewidth]{pictures/ComplexityConstraint.jpg}
+\includegraphics[width=0.8\linewidth]{pictures/phaseTransitions.jpg}
+\includegraphics[width=0.8\linewidth]{pictures/EMschemePDC.jpg}
+\includegraphics[width=0.8\linewidth]{pictures/MLforHC.jpg}
+\includegraphics[width=0.8\linewidth]{pictures/CostFunctionPDC.jpg}
+\includegraphics[width=0.8\linewidth]{pictures/similaritiesToDissimilarities.jpg}
+\includegraphics[width=0.8\linewidth]{pictures/SCC.jpg}
+\includegraphics[width=0.8\linewidth]{pictures/alternativeCuts.jpg}
+\includegraphics[width=0.8\linewidth]{pictures/posteriorAgreement.jpg}
+\includegraphics[width=\linewidth]{pictures/proofPDC1.jpg}
+\includegraphics[width=\linewidth]{pictures/proofPDC2.jpg}
+\textit{Meanfield}
+\includegraphics[width=\linewidth]{pictures/derivationMeanfield.jpg}
+
+\end{center}
 \end{multicols*}
 
 
 
+
 \end{document}
+
 
 
 
