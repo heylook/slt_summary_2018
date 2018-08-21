@@ -143,6 +143,10 @@ $\text{Posterior probability} \propto \text{Likelihood} \times \text{Prior proba
 \textit{Bound on disjunction: }$\max{\mathbb{P}(A_1), \dots , \mathbb{P}(A_n)} \leq \mathbb{P}(E) \leq \min{1, \mathbb{P}(A_1) + \dots + \mathbb{P}(A_n)}$
 
 \textit{Glivenko-Catelli theorem: }$\mathbb{P}(\sup_{x} | F_{n}(x) - F(x)| \to 0)=1$ if $n \to 0$.
+
+\textit{Completing the square: }
+If we want to go from $ax^2 + bx + c = 0$ to $a(x+d)^2 + e = 0$, 
+we get $d$ by $d = \frac{b}{2a}$ and $e = c - \frac{b^2}{4a}$
 \subsection*{Derivatives}
 $\frac{\partial}{\partial \mathbf{x}}(\mathbf{b}^\top \mathbf{x}) = \frac{\partial}{\partial \mathbf{x}}(\mathbf{x}^\top \mathbf{b}) = \mathbf{b}$ \quad
 $\frac{\partial}{\partial \mathbf{x}}(\mathbf{x}^\top \mathbf{x}) = 2\mathbf{x}$\\
@@ -159,6 +163,8 @@ $\frac{\partial}{\partial \mathbf{x}}(\|\mathbf{Ax - b}\|_2^2) = \mathbf{2(A^\to
 $\frac{\partial}{\partial x}\frac{g(x)}{h(x)} = \frac{g'(x)h(x) - g(x)h'(x)}{h(x)^2}$\\
 $\frac{\partial}{\partial(w_i^Tx)}softmax(j)= softmax(j)(\delta_{ij} - softmax(i))$
 
+For functionals, we have the Taylor approximation of: $F[x + \epsilon \eta] = F[X] + \epsilon \int \frac{\partial F}{\partial x}(z) \eta (z) dz + O(\epsilon ^2)$
+
 \subsection*{Maximization Basics}
 \subsubsection*{Calculus of Variations}
 Goal: find the maximum of a functional. \\
@@ -168,7 +174,7 @@ $J[f]=\int _{a}^{b} L[x,f(x),f'(x)] dx $ \\
 change $\delta J = \int_a^b  \frac{\delta J}{\delta f(x)} \delta f(x) dx $ \\
 \textit{complete data likelihood:} $p(x,k|\mu, \eta)$\\
 \textit{incomplete data likelihood:} $p(x|\mu, \eta)$\\
-functional derivative: $\frac{\delta J}{\delta f(x)} = \frac{\partial L}{\partial f} -\frac{d}{dx} \frac{\partial L}{\partial f'} $
+functional derivative (Euler Lagrange): $\frac{\delta J}{\delta f(x)} = \frac{\partial L}{\partial f} -\frac{d}{dx} \frac{\partial L}{\partial f'} $
 \subsubsection*{EM-Algorithm}
 \textit{given}: $p(\mathbf{X},\mathbf{Z}|\mathbf{\theta})$ with observed variables $\mathbf{X}$ and latent variables $\mathbf{Z}$, parameters $\mathbf{\theta}$
 \textit{goal:} maximize likelihood function $p(\mathbf{X}|\mathbf{\theta})$ wrt. $\mathbf{\theta}$.
@@ -704,6 +710,7 @@ In a sense, the optimal $\beta$ is supposed to give us the most robust solution.
 
 
 \end{document}
+
 
 
 
