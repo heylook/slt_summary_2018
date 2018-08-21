@@ -531,7 +531,7 @@ $ \Rightarrow $ embed given nonmetric proximity data problem in vector space wit
 	\item given dissimilarity matrix $D$, calculate centralized version $D^c$ (3.13)
 	\item calculate matrix $S^c = - 1/2 D^c$ (Lemma 3)
 	\item calculate eigenvalues of $S^c$. If $S^c$ isn't positive semidefinite, $\tilde{S} = S^c - \lambda_n \cdot I_n$ (subtract smallest eigenvalue from diagonal elements)
-	\item  $\tilde{D}_{ij} =  \tilde{S}_{ii} +   \tilde{S}_{jj} + \tilde{S}_{ij} $
+	\item  $\tilde{D}_{ij} =  \tilde{S}_{ii} +   \tilde{S}_{jj} + 2\tilde{S}_{ij} $
 	\item Next steps only if you want embedding vectors
 	\item Get $\tilde{S}^c = \frac{1}{2}\tilde{D}^c$
 	\item Get eigendecomposition of $\tilde{S}^c = V\Lambda V^T$ where column $i$ of $V$ is the eigenvector $i$, and $\Lambda$ is the matrix with the corresponding eigenvalue on the diagonal.
