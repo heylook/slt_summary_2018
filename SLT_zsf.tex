@@ -166,9 +166,10 @@ $J(x + \delta x) - J(x) = 0$ \\
 Given: functional of form 
 $J[f]=\int _{a}^{b} L[x,f(x),f'(x)] dx $ \\
 change $\delta J = \int_a^b  \frac{\delta J}{\delta f(x)} \delta f(x) dx $ \\
+
+functional derivative: $\frac{\delta J}{\delta f(x)} = \frac{\partial L}{\partial f} -\frac{d}{dx} \frac{\partial L}{\partial f'} $\\
 \textit{complete data likelihood:} $p(x,k|\mu, \eta)$\\
-\textit{incomplete data likelihood:} $p(x|\mu, \eta)$\\
-functional derivative: $\frac{\delta J}{\delta f(x)} = \frac{\partial L}{\partial f} -\frac{d}{dx} \frac{\partial L}{\partial f'} $
+\textit{incomplete data likelihood:} $p(x|\mu, \eta)$
 \subsubsection*{EM-Algorithm}
 \textit{given}: $p(\mathbf{X},\mathbf{Z}|\mathbf{\theta})$ with observed variables $\mathbf{X}$ and latent variables $\mathbf{Z}$, parameters $\mathbf{\theta}$
 \textit{goal:} maximize likelihood function $p(\mathbf{X}|\mathbf{\theta})$ wrt. $\mathbf{\theta}$.
@@ -237,7 +238,8 @@ $N$ real valued vector $\vec{X}_i $ of dimension $D$.\\
 Construct each data point form its $K$ nearest (e.g. euclidean distance) neighbors. \\
 \textit{Reconstruction error: }$\mathcal{E} (W) = \sum_i |\vec{X}_i -  \sum_j W_{ij} \vec{X}_j|$ \\
 where $W_{ij}$ summarize the contribution of the $j$th data point to
-the $i$th reconstruction. \\
+the $i$th reconstruction. Invariant under uniform translation of points $x_i$ \\
+
 \underline{\textit{LLE Algorithm: }} \\
 \shadowbox{
 \parbox{0.95\linewidth}{
@@ -261,6 +263,17 @@ Given constraints/moments $\mu_i = \mathbb{E}[r_j] = \sum_{i=1}^n r_j(\omega_i)p
 \subsubsection*{Gibbs distribution}
 \textit{minimal sesitivity to changes in constraint moments $\mu_i$} \\
 $p(x) = \frac 1 Z \text{exp}(- \sum_{j=1}^m \lambda_j r_j(x))$ where $m$ is the number of constraints. \\
+
+\textit{Examples:}
+
+\begin{center}
+\includegraphics[width=0.9\linewidth]{pictures/maxEntropyExample1.jpg}
+
+\includegraphics[width=0.9\linewidth]{pictures/maxEntropyExample2.jpg}
+
+\includegraphics[width=0.9\linewidth]{pictures/maxEntropyExample3.jpg}
+\end{center}
+
 
 $Z = \int_x \text{exp}(- \sum_{j=1}^m \lambda_j r_j(x)) dx$
 \subsubsection*{Gibbs Free Energy}
