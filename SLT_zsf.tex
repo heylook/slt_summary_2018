@@ -531,7 +531,7 @@ $ \Rightarrow $ embed given nonmetric proximity data problem in vector space wit
 	\item given dissimilarity matrix $D$, calculate centralized version $D^c$ (3.13)
 	\item calculate matrix $S^c = - 1/2 D^c$ (Lemma 3)
 	\item calculate eigenvalues of $S^c$. If $S^c$ isn't positive semidefinite, $\tilde{S} = S^c - \lambda_n \cdot I_n$ (subtract smallest eigenvalue from diagonal elements)
-	\item  $\tilde{D}_{ij} =  \tilde{S}_{ii} +   \tilde{S}_{jj} + 2\tilde{S}_{ij} $
+	\item  $\tilde{D}_{ij} =  \tilde{S}_{ii} +   \tilde{S}_{jj} - 2\tilde{S}_{ij} $
 	\item Next steps only if you want embedding vectors
 	\item Get $\tilde{S}^c = \frac{1}{2}\tilde{D}^c$
 	\item Get eigendecomposition of $\tilde{S}^c = V\Lambda V^T$ where column $i$ of $V$ is the eigenvector $i$, and $\Lambda$ is the matrix with the corresponding eigenvalue on the diagonal.
@@ -776,7 +776,12 @@ where $|\{\tau_s\}|$ is the number of distinct clusterings on $\mathbf{X}^{(1)}$
 
 Then to evaluate the approximation capacity of the k-means cost function, we use deterministic annealing to compute the optimal centroids and costs $R(c, \mathbf{X}^{(i)})$ at different temperatures $T = \beta^{-1}$, allowing for $2K$ possible clusters to enable overfitting, and choose as stopping temperature the one with the highest mutual information, balancing informativeness and robustness.
 
-Examples of transformations: permutations in graph based clustering, translation for mean estimation, rotation for SVD, scalling for linear regression, permutation and scaling for sparse linear regression. 
+Examples of transformations: permutations in graph based clustering, translation for mean estimation, rotation for SVD, scalling for linear regression, permutation and scaling for sparse linear regression.
+
+Cluster validity indices: The mean dispersion of a cluster is the mean of the squared distances of the
+points of the cluster with respect to their barycenter. The Ball-Hall index is the
+mean, through all the clusters, of their mean dispersion.
+The Banfield Raftery index is the weighted sum of the logarithms of the traces of the cov matrix of each cluster.
 
 \section*{Exercise Sheets}
 \subsection*{Optimal $\beta$ for Expected Log-Posterior Agreement}
@@ -813,6 +818,7 @@ In a sense, the optimal $\beta$ is supposed to give us the most robust solution.
 
 
 \end{document}
+
 
 
 
